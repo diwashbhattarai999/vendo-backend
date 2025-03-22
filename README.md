@@ -140,9 +140,9 @@ Contributors are welcome! If you'd like to enhance the project or add new featur
 
 6. Open a Pull Request on GitHub.
 
-If you encounter a bug or want to see something added/changed, please go ahead and [Open an issue](https://github.com/your-username/vendo-backend/issues/new/choose).
+If you encounter a bug or want to see something added/changed, please go ahead and [Open an issue](https://github.com/diwashbhattarai999/vendo-backend/issues/new/choose).
 
-If you need help with something, feel free to [Start a discussion](https://github.com/your-username/vendo-backend/discussions/new/choose).
+If you need help with something, feel free to [Start a discussion](https://github.com/diwashbhattarai999/vendo-backend/discussions/new/choose).
 
 ## **Contact**
 
