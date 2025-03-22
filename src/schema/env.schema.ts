@@ -73,11 +73,6 @@ export const envSchema = z.object({
       .refine((val) => typeof val === 'boolean', {
         message: 'DISABLE_VALIDATE_API_KEY_ON_DEVELOPMENT must be a truthy value like "true", "1", or "t".',
       }),
-
-    /**
-     * Flag to disable the Twilio integration if the value is a truthy string.
-     */
-    STORAGE_PATH: z.string({ required_error: 'STORAGE_PATH is required.' }),
   }),
 
   twilio: z.object({

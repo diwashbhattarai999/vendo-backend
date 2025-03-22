@@ -1,0 +1,12 @@
+# Ignore node_modules to avoid rebuilding them inside the container
+node_modules
+
+# Ignore build and distribution files
+build
+dist
+coverage
+
+# Ignore IDE files
+.vscode
+.idea
+

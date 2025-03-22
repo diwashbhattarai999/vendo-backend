@@ -15,7 +15,6 @@ const parsedEnv = envSchema.safeParse({
     API_KEY: process.env.API_KEY,
     DISABLE_RATE_LIMITER: process.env.DISABLE_RATE_LIMITER,
     DISABLE_VALIDATE_API_KEY_ON_DEVELOPMENT: process.env.DISABLE_VALIDATE_API_KEY_ON_DEVELOPMENT,
-    STORAGE_PATH: process.env.STORAGE_PATH,
   },
 
   firebase: {

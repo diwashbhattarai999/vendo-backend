@@ -32,3 +32,7 @@ config
 *.md
 *.txt
 *.json
+
+# Ignore docker files:
+Dockerfile.*
+docker-compose.*

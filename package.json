@@ -36,19 +36,23 @@
   },
   "scripts": {
     "clean": "tsc --build --clean && rm -rf dist && rm -rf logs",
-    "build": "tsc -p tsconfig.prod.json && cp -r public dist/public",
-    "start": "cross-env NODE_ENV=production node dist/src/server.js",
     "predev": "pnpm clean && pnpm build",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "live": "npm install --only=dev && npm run build && npm run start",
+    "build": "tsc -p tsconfig.prod.json && cp -r public dist/public",
+    "start": "cross-env NODE_ENV=production node dist/src/server.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint \"src/**/*.{js,ts}\" --ignore-pattern 'dist/**' --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint \"src/**/*.{js,ts}\" --ignore-pattern 'dist/**' --fix --fix",
     "format": "prettier --write \"src/**/*.{js,ts,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,json,md}\"",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "commit": "git cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "docker:build:dev": "docker build -f Dockerfile.development --build-arg NODE_ENV=development --build-arg PORT=8080 -t vendo-backend:development .",
+    "docker:build:prod": "docker build -f Dockerfile.production --build-arg NODE_ENV=production --build-arg PORT=8080 -t vendo-backend:production .",
+    "docker:run:dev": "docker run --rm --name vendo-backend-dev -p 8080:8080 --env-file .env.development vendo-backend:development",
+    "docker:run:prod": "docker run --rm --name vendo-backend-prod -p 8080:8080 --env-file .env.production vendo-backend:production",
+    "docker:clean": "docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && docker rmi $(docker images -q) || true && docker volume prune -f"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.4",

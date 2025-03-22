@@ -1,0 +1,26 @@
+# Using Lightweight docker image for node
+FROM node:20-alpine AS base
+
+# Setting Up Working Directory
+WORKDIR /usr/src/vendo-backend
+
+# Copy package.json and pnpm-lock.yaml first to take advantage of Docker cache
+COPY package*.json pnpm-lock.yaml ./
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
+# Install only production dependencies
+RUN pnpm install
+
+# Copy the rest of the application
+COPY . .
+
+# Build the application
+RUN pnpm run build
+
+# Expose the application port (8080)
+EXPOSE 8080
+
+# Start application
+CMD ["pnpm", "start"]
