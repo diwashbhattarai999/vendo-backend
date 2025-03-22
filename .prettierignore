@@ -3,5 +3,32 @@ build
 dist
 coverage
 node_modules
-package.json
 package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Ignore IDE and editor folders:
+.vscode
+.idea
+*.sublime-workspace
+*.sublime-project
+
+# Ignore GitHub configurations:
+.github
+
+# Ignore logs:
+*.log
+npm-debug.log*
+
+# Ignore environment and config files:
+.env
+.env.local
+.env.*.local
+config
+*.yml
+*.yaml
+
+# Ignore other unnecessary files/folders:
+*.md
+*.txt
+*.json
