@@ -91,23 +91,29 @@ You can find the Postman Collection for API documentation here:
 
 ## **Features**
 
-- Custom error class
-- Custom error handler
-- Logging
-- Localization
-- Rate limiting
-- Slow down
-- Multer (for handling file uploads)
-- API key implementation
-- Sending Emails (using SendGrid)
-- Metrics (Analytics)
+- **Custom Error Class**: Custom error handling with dedicated error classes.
+- **Custom Error Handler**: Global error handling for consistent error responses.
+- **Logging**: Integrated logging with **Winston** for request/response and error logs.
+- **Localization**: **i18next** integration for multi-language support.
+- **Rate Limiting**: **express-rate-limit** to prevent DDoS and brute force attacks.
+- **Slow Down**: **express-slow-down** for delaying requests and reducing the impact of high traffic.
+- **File Upload Handling**: **Multer** for handling file uploads.
+- **API Key Implementation**: Protection of sensitive routes using API keys.
+- **Sending Emails**: Email sending via **SendGrid** for notifications and alerts.
+- **Metrics (Analytics)**: **Prom-client** for tracking application metrics and statistics.
+- **Docker**: Containerization using **Docker** for development and production environments.
+- **CI/CD**: Integrated **GitHub Actions** for Continuous Integration and Continuous Deployment pipelines.
+- **Linting**: **ESLint** for code quality and ensuring best practices.
+- **Prettier**: **Prettier** for code formatting to ensure consistency.
+- **Husky**: **Husky** for managing **git hooks**, including pre-commit checks.
+- **Commitizen**: Enforcing conventional commits using **Commitizen** and **cz-conventional-changelog**.
+- **GitHub Actions**: Automated workflows for continuous testing and deployment using **GitHub Actions**.
 
 ## **Features to be Added**
 
-- Testing
-- Containerization
-- Authentication (Passport.js)
-- Authorization
+- **Testing**: Adding unit and integration testing using frameworks like **Jest** or **Mocha**.
+- **Authentication**: Integration with **Passport.js** for secure authentication strategies.
+- **Authorization**: Role-based access control for user management and data protection.
 
 ## **Contributing**
 
