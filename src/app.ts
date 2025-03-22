@@ -6,8 +6,8 @@ import ruid from 'express-ruid';
 import useragent from 'express-useragent';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import path from 'path';
 import requestIp from 'request-ip';
+import favicon from 'serve-favicon';
 
 import { env } from '@/config/env';
 
@@ -72,7 +72,13 @@ app.use(cookieParser()); // Cookie parser
  * Enhances response delivery and application performance.
  */
 app.use(compression()); // Compresses response bodies for better performance
-app.use(path.join('/', env.app.STORAGE_PATH), express.static(path.join(__dirname, env.app.STORAGE_PATH))); // Serves static files from the storage path
+
+/**
+ * STATIC MIDDLEWARE
+ * Serves static files from the public directory.
+ */
+app.use(express.static('public')); // Serves static files from public directory
+app.use(favicon('public/favicon.ico')); // Serves favicon.ico from public directory
 
 /**
  * LOGGING MIDDLEWARE
