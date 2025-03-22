@@ -1,0 +1,39 @@
+{
+  "general_error_message": "त्रुटि भयो।",
+  "general_error_details": "अप्रत्याशित त्रुटि भयो। कृपया पछि पुन: प्रयास गर्नुहोस्।",
+  "general_error_suggestion": "पुन: प्रयास गर्नुहोस् वा समस्या जारी रहेमा समर्थनलाई सम्पर्क गर्नुहोस्।",
+
+  "too_many_requests_message": "धेरै अनुरोधहरू। कृपया पछि पुन: प्रयास गर्नुहोस्।",
+  "too_many_requests_details": "तपाईंले अनुमत अधिकतम अनुरोधहरूको संख्या नाघ्नुभएको छ। कृपया पर्खनुहोस् र पुन: प्रयास गर्नुहोस्।",
+  "too_many_requests_suggestion": "अनुरोधको आवृत्ति घटाउनुहोस् र पछि पुन: प्रयास गर्नुहोस्।",
+
+  "invalid_package_message": "अवैध package.json फाइल।",
+  "invalid_package_details": "package.json फाइल सही रूपमा स्वरूपित छैन वा यसमा त्रुटिहरू छन्।",
+  "invalid_package_suggestion": "कृपया package.json फाइलको संरचना जाँच गर्नुहोस् र कुनै पनि त्रुटि सुधार गर्नुहोस्।",
+
+  "route_not_found_message": "मार्ग फेला परेन।",
+  "route_not_found_details": "अनुरोध गरिएको मार्ग अवस्थित छैन।",
+  "route_not_found_suggestion": "URL जाँच गर्नुहोस् र तपाईंले सही अन्तबिन्दु प्रयोग गरिरहनुभएको छ भनेर सुनिश्चित गर्नुहोस्।",
+
+  "throttling_message": "अनुरोध दर सीमित। तपाईंको अनुरोधहरूमा प्रगतिशील ढिलाइ लागू गरिएको छ।",
+
+  "unauthorized": "तपाईंलाई यो स्रोतमा पहुँच गर्न अनुमति छैन।",
+
+  "api_key_not_found_message": "API कुञ्जी फेला परेन।",
+  "api_key_not_found_details": "तपाईंको अनुरोधसँग कुनै API कुञ्जी प्रदान गरिएको छैन।",
+  "api_key_not_found_suggestion": "मान्य API कुञ्जी समावेश गर्नुहोस् र पुन: प्रयास गर्नुहोस्।",
+
+  "api_key_not_matched_message": "API कुञ्जी मेल खाएन।",
+  "api_key_not_matched_details": "प्रदान गरिएको API कुञ्जी अपेक्षित कुञ्जीसँग मेल खाँदैन।",
+  "api_key_not_matched_suggestion": "API कुञ्जी प्रमाणित गर्नुहोस् र पुन: प्रयास गर्नुहोस्।",
+
+  "email_not_sent_message": "इमेल पठाउन असफल।",
+  "email_not_sent_details": "इमेल पठाउने क्रममा त्रुटि भयो।",
+  "email_not_sent_suggestion": "तपाईंको इमेल कन्फिगरेसन जाँच गर्नुहोस् र पुन: प्रयास गर्नुहोस्।",
+
+  "file_not_found_message": "फाइल फेला परेन।",
+  "file_not_found_details": "अनुरोध गरिएको फाइल अवस्थित छैन।",
+  "file_not_found_suggestion": "फाइल पथ प्रमाणित गर्नुहोस् र पुन: प्रयास गर्नुहोस्।",
+
+  "schema_validation_error": "स्कीमा मान्यता असफल। कृपया तपाईंको इनपुट डाटा जाँच गर्नुहोस्।"
+}

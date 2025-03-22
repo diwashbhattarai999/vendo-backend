@@ -1,0 +1,39 @@
+{
+  "general_error_message": "An error occurred.",
+  "general_error_details": "An unexpected error occurred. Please try again later.",
+  "general_error_suggestion": "Try again later or contact support if the issue persists.",
+
+  "too_many_requests_message": "Too many requests. Please try again later.",
+  "too_many_requests_details": "You have exceeded the maximum number of allowed requests. Please wait and try again.",
+  "too_many_requests_suggestion": "Reduce the request frequency and try again later.",
+
+  "invalid_package_message": "Invalid package.json file.",
+  "invalid_package_details": "The package.json file is not properly formatted or contains errors.",
+  "invalid_package_suggestion": "Please check the package.json file structure and fix any errors.",
+
+  "route_not_found_message": "Route not found.",
+  "route_not_found_details": "The requested route does not exist.",
+  "route_not_found_suggestion": "Check the URL and ensure you are using the correct endpoint.",
+
+  "throttling_message": "Request rate limited. Progressive delays applied to your requests.",
+
+  "unauthorized": "You are not authorized to access this resource.",
+
+  "api_key_not_found_message": "API key not found.",
+  "api_key_not_found_details": "No API key was provided with your request.",
+  "api_key_not_found_suggestion": "Include a valid API key and try again.",
+
+  "api_key_not_matched_message": "API key mismatch.",
+  "api_key_not_matched_details": "The provided API key does not match the expected key.",
+  "api_key_not_matched_suggestion": "Verify the API key and try again.",
+
+  "email_not_sent_message": "Email delivery failed.",
+  "email_not_sent_details": "An error occurred while sending the email.",
+  "email_not_sent_suggestion": "Check your email configuration and try again.",
+
+  "file_not_found_message": "File not found.",
+  "file_not_found_details": "The requested file does not exist.",
+  "file_not_found_suggestion": "Verify the file path and try again.",
+
+  "schema_validation_error": "Schema validation failed. Please check your input data."
+}

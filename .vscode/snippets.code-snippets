@@ -1,0 +1,24 @@
+{
+  "New Express Controller": {
+    "prefix": "nec",
+    "body": [
+      "import type { NextFunction, Request, Response } from 'express';",
+      "",
+      "import { asyncCatch } from '@/error/async.catch';",
+      "",
+      "export const ${1:controllerName}Handler = asyncCatch(async (req: Request, res: Response, next: NextFunction) => {",
+      "  ${2: // Your logic goes here...}",
+      "});",
+    ],
+    "description": "Creates an Express controller function for a new file.",
+  },
+  "Express Controller": {
+    "prefix": "ec",
+    "body": [
+      "export const ${1:controllerName}Handler = asyncCatch(async (req: Request, res: Response, next: NextFunction) => {",
+      "  ${2: // Your logic goes here...}",
+      "});",
+    ],
+    "description": "Creates an Express controller function",
+  },
+}
