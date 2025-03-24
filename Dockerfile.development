@@ -13,9 +13,6 @@ RUN npm install -g pnpm
 # Install only development dependencies
 RUN pnpm install
 
-# Copy the rest of the application
-COPY . .
-
 # Expose the application port (8080)
 EXPOSE 8080
 

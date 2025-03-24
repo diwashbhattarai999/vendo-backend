@@ -1,5 +1,3 @@
-import 'module-alias/register'; // Ensure module aliases (e.g., '@/utils') are resolved correctly before other imports
-
 import { env } from '@/config/env';
 
 import { getLocalIPAddress } from '@/utils/system.utils';
