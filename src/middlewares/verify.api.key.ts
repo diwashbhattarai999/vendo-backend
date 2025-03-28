@@ -38,24 +38,12 @@ export const verifyApiKey = asyncCatch(async (req: Request, _res: Response, next
 
   // If API key is missing in the request, throw an error
   if (!apiKeyString) {
-    throw new CustomError(
-      STATUS_CODES.UNAUTHORIZED,
-      ERROR_CODES.UNAUTHORIZED,
-      t('api_key_not_found_message', { ns: 'error' }),
-      t('api_key_not_found_details', { ns: 'error' }),
-      t('api_key_not_found_suggestion', { ns: 'error' }),
-    );
+    throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('api_key_not_found_message', { ns: 'error' }));
   }
 
   // If the provided API key does not match the valid API key, throw an error
   if (apiKeyString !== validApiKey) {
-    throw new CustomError(
-      STATUS_CODES.UNAUTHORIZED,
-      ERROR_CODES.UNAUTHORIZED,
-      t('api_key_not_matched_message', { ns: 'error' }),
-      t('api_key_not_matched_details', { ns: 'error' }),
-      t('api_key_not_matched_suggestion', { ns: 'error' }),
-    );
+    throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('api_key_not_matched_message', { ns: 'error' }));
   }
 
   // Attach the valid API key to the request object for later use

@@ -44,13 +44,7 @@ export function validateSchema(schema: z.AnyZodObject) {
 
       logger.error(t('schema_validation_error', { ns: 'error' }));
 
-      throw new CustomError(
-        STATUS_CODES.BAD_REQUEST,
-        ERROR_CODES.INVALID_JSON_CONFIG,
-        t('general_error_message', { ns: 'error' }),
-        t('general_error_details', { ns: 'error' }),
-        t('general_error_suggestion', { ns: 'error' }),
-      );
+      throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.INVALID_JSON_CONFIG, t('general_error_message', { ns: 'error' }));
     }
   };
 }

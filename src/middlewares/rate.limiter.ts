@@ -47,12 +47,6 @@ export const rateLimiter = rateLimit({
   }),
 
   handler: (req: Request, _res: Response) => {
-    throw new CustomError(
-      STATUS_CODES.TOO_MANY_REQUESTS,
-      ERROR_CODES.TOO_MANY_REQUESTS,
-      req.t('too_many_requests_message', { ns: 'error' }),
-      req.t('too_many_requests_details', { ns: 'error' }),
-      req.t('too_many_requests_suggestion', { ns: 'error' }),
-    );
+    throw new CustomError(STATUS_CODES.TOO_MANY_REQUESTS, ERROR_CODES.TOO_MANY_REQUESTS, req.t('too_many_requests_message', { ns: 'error' }));
   },
 });

@@ -43,12 +43,13 @@
     "prepare": "husky || true",
     "commit": "git cz",
     "release": "standard-version",
-    "db:migrate": "pnpm prisma migrate dev",
-    "db:migrate:prod": "pnpm prisma migrate deploy",
-    "db:studio": "pnpm prisma studio",
-    "db:reset": "pnpm prisma migrate reset --force",
-    "docker:compose:dev": "docker compose up -d vendo-backend-dev vendo-db-dev",
-    "docker:compose:prod": "docker compose up -d vendo-backend-prod vendo-db-prod",
+    "db:studio": "dotenv -e .env.development -- npx prisma studio",
+    "db:pull": "dotenv -e .env.development -- pnpm prisma db pull",
+    "db:reset": "dotenv -e .env.development -- pnpm prisma migrate reset --force",
+    "db:migrate": "dotenv -e .env.development -- pnpm prisma migrate dev",
+    "db:generate": "dotenv -e .env.development -- pnpm prisma generate",
+    "docker:compose:dev": "docker compose up -d vendo-backend-dev",
+    "docker:compose:prod": "docker compose up -d vendo-backend-prod",
     "docker:compose:stop": "docker compose down",
     "logs:dev": "docker logs -f vendo-backend-dev",
     "logs:prod": "docker logs -f vendo-backend-prod"
@@ -135,5 +136,6 @@
       "esbuild",
       "prisma"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.6.5+sha512.cdf928fca20832cd59ec53826492b7dc25dc524d4370b6b4adbf65803d32efaa6c1c88147c0ae4e8d579a6c9eec715757b50d4fa35eea179d868eada4ed043af"
 }

@@ -1,28 +1,4 @@
 services:
-  # PostgreSQL Database for Development
-  vendo-db-dev:
-    container_name: vendo_db_dev
-    image: postgres:16
-    restart: always
-    ports:
-      - "5432:5432"
-    env_file:
-      - .env.development
-    volumes:
-      - postgres_data_dev:/var/lib/postgresql/data
-
-  # PostgreSQL Database for Production
-  vendo-db-prod:
-    container_name: vendo_db_prod
-    image: postgres:16
-    restart: always
-    ports:
-      - "5433:5432"  # Use a different port to avoid conflicts
-    env_file:
-      - .env.production
-    volumes:
-      - postgres_data_prod:/var/lib/postgresql/data
-
   # Node.js Development Server
   vendo-backend-dev:
     container_name: vendo-backend-dev
@@ -34,11 +10,8 @@ services:
       - "8080:8080"
     volumes:
       - .:/usr/src/vendo-backend
-      - /usr/src/vendo-backend/node_modules
     env_file:
       - .env.development
-    depends_on:
-      - vendo-db-dev
 
   # Node.js Production Server
   vendo-backend-prod:
@@ -51,9 +24,8 @@ services:
       - "8080:8080"
     env_file:
       - .env.production
-    depends_on:
-      - vendo-db-prod
 
 volumes:
   postgres_data_dev: {}
   postgres_data_prod: {}
+

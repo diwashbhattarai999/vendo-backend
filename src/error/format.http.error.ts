@@ -22,17 +22,11 @@ export const formatHttpError = (req: Request, error: CustomError) => {
     error: {
       errorId: uuidv4(),
       name: error.name,
-
       code: error.errorCode,
       message: error.message,
-      details: error.details,
-      suggestion: error.suggestion,
-
       ip: req.clientIp,
-
       url: req.originalUrl,
       method: req.method,
-
       timestamp: error.timestamp.toISOString(),
 
       /**
