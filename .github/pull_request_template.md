@@ -1,9 +1,11 @@
 ---
-name: Pull Request
-about: Submit a pull request to enhance Vendo's backend
-title: '[PR]: '
-labels: ''
-assignees: ''
+
+Name: Pull Request
+About: Submit a pull request to enhance Vendo's backend
+Title: '[PR]: '
+Labels: ''
+Assignees: ''
+
 ---
 
 ## 📌 Overview
