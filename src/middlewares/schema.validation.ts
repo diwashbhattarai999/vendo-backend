@@ -28,7 +28,7 @@ export function validateSchema(schema: z.AnyZodObject) {
       return next();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        res.status(400).send({
+        res.status(STATUS_CODES.BAD_REQUEST).send({
           statusCode: STATUS_CODES.BAD_REQUEST,
           message: t('schema_validation_error', { ns: 'error' }),
           errorList: error.errors.map((e) => ({

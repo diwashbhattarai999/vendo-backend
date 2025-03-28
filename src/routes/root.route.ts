@@ -1,5 +1,7 @@
 import { Router } from 'express';
 
+import { sendHttpResponse } from '@/utils/send.http.response';
+
 import { getHealthHandler } from '@/controllers/health.controller';
 import { metricsHandler } from '@/controllers/metrics.controller';
 import { rootRouteHandler } from '@/controllers/root.controller';
@@ -38,5 +40,10 @@ rootRouter.get('/health', getHealthHandler);
  * @returns {string} 500 - Internal server error if metrics cannot be retrieved.
  */
 rootRouter.get('/metrics', validateSchema(metricsSchema), metricsHandler);
+
+rootRouter.post('/test', (req, res) => {
+  const { body } = req;
+  sendHttpResponse(res, 200, 'Test successful', body);
+});
 
 export { rootRouter };

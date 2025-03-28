@@ -66,3 +66,5 @@ export const STATUS_CODES = {
   GATEWAY_TIMEOUT: 504,
   HTTP_VERSION_NOT_SUPPORTED: 505,
 } as const;
+
+export type TStatusCodes = (typeof STATUS_CODES)[keyof typeof STATUS_CODES];

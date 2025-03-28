@@ -11,3 +11,5 @@ export const ERROR_CODES = {
   CONFLICT: 'E009',
   INTERNAL_SERVER_ERROR: 'E010',
 } as const;
+
+export type TErrorCodes = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

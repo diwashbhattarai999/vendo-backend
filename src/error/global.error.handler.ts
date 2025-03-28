@@ -20,11 +20,17 @@ export function globalErrorHandler(err: CustomError, req: Request, res: Response
     err.message || t('general_error_message', { ns: 'error' }),
   );
 
+  if (err instanceof SyntaxError) {
+    error.statusCode = STATUS_CODES.BAD_REQUEST;
+    error.errorCode = ERROR_CODES.INVALID_JSON_CONFIG;
+    error.message = t('invalid_request_body', { ns: 'error' });
+  }
+
   // Format the error
   const formatedError = formatHttpError(req, error);
 
   // Log the error on console in english
-  logger.error(formatedError.error.message);
+  logger.error(formatedError.message);
 
   // Send error response
   res.status(error.statusCode).json(formatedError);

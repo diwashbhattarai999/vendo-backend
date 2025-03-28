@@ -11,7 +11,8 @@ import favicon from 'serve-favicon';
 
 import { env } from '@/config/env';
 
-import { globalErrorHandler } from '@/middlewares/global.error.handler';
+import { globalErrorHandler } from '@/error/global.error.handler';
+
 import { i18nextMiddleware } from '@/middlewares/i18next';
 import { rateLimiter } from '@/middlewares/rate.limiter';
 import { routeNotFoundHandler } from '@/middlewares/route.not.found';

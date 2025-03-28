@@ -33,7 +33,7 @@ export const rootRouteHandler = asyncCatch(async (req: Request, res: Response) =
   }
 
   // Send a welcome message with the app name, version, and environment.
-  sendHttpResponse(res, 200, t('welcomeMessage'), {
+  sendHttpResponse(res, STATUS_CODES.OK, t('welcomeMessage'), {
     appName,
     appVersion,
     appEnvironment,
