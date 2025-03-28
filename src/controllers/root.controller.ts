@@ -29,13 +29,7 @@ export const rootRouteHandler = asyncCatch(async (req: Request, res: Response) =
 
   // Check if the required environment variables are set. If not, throw an error.
   if (!appName || !appVersion || !appEnvironment) {
-    throw new CustomError(
-      STATUS_CODES.BAD_REQUEST,
-      ERROR_CODES.INVALID_JSON_CONFIG,
-      t('invalid_package_message', { ns: 'error' }),
-      t('invalid_package_details', { ns: 'error' }),
-      t('invalid_package_suggestion', { ns: 'error' }),
-    );
+    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.INVALID_JSON_CONFIG, t('invalid_package_message', { ns: 'error' }));
   }
 
   // Send a welcome message with the app name, version, and environment.

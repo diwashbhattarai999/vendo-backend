@@ -18,8 +18,6 @@ export function globalErrorHandler(err: CustomError, req: Request, res: Response
     err.statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR,
     err.errorCode || ERROR_CODES.GENERAL_ERROR,
     err.message || t('general_error_message', { ns: 'error' }),
-    err.details || t('general_error_details', { ns: 'error' }),
-    err.suggestion || t('general_error_suggestion', { ns: 'error' }),
   );
 
   // Format the error

@@ -47,12 +47,6 @@ export const sendEmail = async (req: Request, payload: SendGridEmailType) => {
     });
   } catch (error) {
     logger.error(error);
-    throw new CustomError(
-      STATUS_CODES.INTERNAL_SERVER_ERROR,
-      ERROR_CODES.GENERAL_ERROR,
-      t('email_not_sent_message', { ns: 'error' }),
-      t('email_not_sent_details', { ns: 'error' }),
-      t('email_not_sent_suggestion', { ns: 'error' }),
-    );
+    throw new CustomError(STATUS_CODES.INTERNAL_SERVER_ERROR, ERROR_CODES.GENERAL_ERROR, t('email_not_sent_message', { ns: 'error' }));
   }
 };

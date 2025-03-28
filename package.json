@@ -1,6 +1,6 @@
 {
   "name": "vendo-backend",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Backend for Vendo, a SaaS platform.",
   "author": {
     "name": "Diwash Bhattarai",
@@ -8,7 +8,6 @@
     "url": "https://diwashb.me"
   },
   "license": "MIT",
-  "type": "commonjs",
   "main": "src/server.ts",
   "repository": {
     "type": "git",
@@ -31,14 +30,10 @@
     "PostgreSQL",
     "API"
   ],
-  "_moduleAliases": {
-    "@": "dist/src"
-  },
   "scripts": {
     "clean": "tsc --build --clean && rm -rf dist && rm -rf logs",
-    "predev": "pnpm clean && pnpm build",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "tsc -p tsconfig.prod.json && cp -r public dist/public",
+    "build": "tsc -p tsconfig.prod.json && tsc-alias -p tsconfig.prod.json && cp -r public dist/public",
     "start": "cross-env NODE_ENV=production node dist/src/server.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint \"src/**/*.{js,ts}\" --ignore-pattern 'dist/**' --report-unused-disable-directives --max-warnings 0",
@@ -48,13 +43,19 @@
     "prepare": "husky || true",
     "commit": "git cz",
     "release": "standard-version",
-    "docker:build:dev": "docker build -f Dockerfile.development --build-arg NODE_ENV=development --build-arg PORT=8080 -t vendo-backend:development .",
-    "docker:build:prod": "docker build -f Dockerfile.production --build-arg NODE_ENV=production --build-arg PORT=8080 -t vendo-backend:production .",
-    "docker:run:dev": "docker run --rm --name vendo-backend-dev -p 8080:8080 --env-file .env.development vendo-backend:development",
-    "docker:run:prod": "docker run --rm --name vendo-backend-prod -p 8080:8080 --env-file .env.production vendo-backend:production",
-    "docker:clean": "docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && docker rmi $(docker images -q) || true && docker volume prune -f"
+    "db:studio": "dotenv -e .env.development -- npx prisma studio",
+    "db:pull": "dotenv -e .env.development -- pnpm prisma db pull",
+    "db:reset": "dotenv -e .env.development -- pnpm prisma migrate reset --force",
+    "db:migrate": "dotenv -e .env.development -- pnpm prisma migrate dev",
+    "db:generate": "dotenv -e .env.development -- pnpm prisma generate",
+    "docker:compose:dev": "docker compose up -d vendo-backend-dev",
+    "docker:compose:prod": "docker compose up -d vendo-backend-prod",
+    "docker:compose:stop": "docker compose down",
+    "logs:dev": "docker logs -f vendo-backend-dev",
+    "logs:prod": "docker logs -f vendo-backend-prod"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "@sendgrid/mail": "^8.1.4",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",
@@ -102,11 +103,12 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
-    "module-alias": "^2.2.3",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.3",
+    "prisma": "^6.5.0",
     "standard-version": "^9.5.0",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.11",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0"
@@ -126,5 +128,14 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
-  }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma"
+    ]
+  },
+  "packageManager": "pnpm@10.6.5+sha512.cdf928fca20832cd59ec53826492b7dc25dc524d4370b6b4adbf65803d32efaa6c1c88147c0ae4e8d579a6c9eec715757b50d4fa35eea179d868eada4ed043af"
 }

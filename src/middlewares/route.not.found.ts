@@ -18,11 +18,5 @@ export const routeNotFoundHandler = (req: Request, _res: Response, _next: NextFu
 
   logger.warn(`Route not found: ${req.method} ${req.originalUrl}`);
 
-  throw new CustomError(
-    STATUS_CODES.NOT_FOUND,
-    ERROR_CODES.ROUTE_NOT_FOUND,
-    t('route_not_found_message', { ns: 'error' }),
-    t('route_not_found_details', { ns: 'error' }),
-    t('route_not_found_suggestion', { ns: 'error' }),
-  );
+  throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.ROUTE_NOT_FOUND, t('route_not_found_message', { ns: 'error' }));
 };

@@ -1,20 +1,23 @@
 # Using a lightweight Node.js image
-FROM node:20-alpine AS base
+FROM node:20-alpine3.20 AS base
 
 # Setting Up Working Directory
 WORKDIR /usr/src/vendo-backend
 
-# Copy package.json and pnpm-lock.yaml first to take advantage of Docker cache
-COPY package*.json pnpm-lock.yaml ./
-
 # Install pnpm globally
-RUN npm install -g pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Install only development dependencies
-RUN pnpm install
+# Copy package.json, pnpm-lock.yaml to leverage Docker caching
+COPY package.json pnpm-lock.yaml ./
 
-# Copy the rest of the application
-COPY . .
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
+
+# Copy the prisma schema file
+COPY prisma ./prisma/
+
+# Generate Prisma client
+RUN pnpm prisma generate
 
 # Expose the application port (8080)
 EXPOSE 8080

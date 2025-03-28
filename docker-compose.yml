@@ -1,0 +1,31 @@
+services:
+  # Node.js Development Server
+  vendo-backend-dev:
+    container_name: vendo-backend-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/usr/src/vendo-backend
+    env_file:
+      - .env.development
+
+  # Node.js Production Server
+  vendo-backend-prod:
+    container_name: vendo-backend-prod
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.production
+
+volumes:
+  postgres_data_dev: {}
+  postgres_data_prod: {}
+

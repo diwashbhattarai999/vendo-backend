@@ -109,13 +109,7 @@ export const fileUploadExampleHandler = asyncCatch(async (req: Request, res: Res
   const file = req.file as Express.Multer.File;
 
   if (!file) {
-    throw new CustomError(
-      STATUS_CODES.NOT_FOUND,
-      ERROR_CODES.NOT_FOUND,
-      t('file_not_found_message', { ns: 'error' }),
-      t('file_not_found_details', { ns: 'error' }),
-      t('file_not_found_suggestion', { ns: 'error' }),
-    );
+    throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.NOT_FOUND, t('file_not_found_message', { ns: 'error' }));
   }
 
   sendHttpResponse(res, STATUS_CODES.OK, t('file_upload'), {
