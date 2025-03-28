@@ -2,9 +2,9 @@ import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import * as i18middleware from 'i18next-http-middleware';
 
-import { logger } from '@/services/winston.logger';
-
 import pkg from '../../package.json';
+
+import { logger } from '@/logger/winston.logger';
 
 i18next
   .use(Backend) // Load translations from file system
@@ -12,7 +12,7 @@ i18next
   .init({
     fallbackLng: 'en', // Default language if no match found
     preload: ['en', 'ne'], // Load these languages on startup
-    ns: ['translation', 'auth', 'error'], // list of Namespace (useful for modular translations)
+    ns: ['translation', 'error'], // list of Namespace (useful for modular translations)
     defaultNS: 'translation', // Default namespace
     backend: {
       loadPath: './locales/{{lng}}/{{ns}}.json', // Translation files path

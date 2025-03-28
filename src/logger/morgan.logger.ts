@@ -1,10 +1,8 @@
 import morgan from 'morgan';
 
-import { env } from '@/config/env';
+import { isDevelopment } from '@/utils/env.utils';
 
-import { EApplicationEnvironment } from '@/constant/application';
-
-import { logger } from '@/services/winston.logger';
+import { logger } from '@/logger/winston.logger';
 
 /**
  * Custom stream configuration for Morgan.
@@ -24,7 +22,7 @@ const stream = {
  */
 const skip = () => {
   // Skip HTTP request logging in non-development environments
-  return env.app.NODE_ENV !== EApplicationEnvironment.DEVELOPMENT;
+  return !isDevelopment;
 };
 
 /**

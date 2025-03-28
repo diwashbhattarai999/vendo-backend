@@ -1,25 +1,11 @@
 {
-  "welcome": "Welcome to the API.",
-  "api_health_check_success": "API is operational.",
-  "api_slow_down_test": "Testing API slow down mechanism.",
-  "no_delay": "No delay detected.",
-  "request_being_slowed_down": "Request processing is being slowed down due to rate limits.",
-
-  "email_sent": "Email sent successfully.",
-  "api_key_verified": "API key successfully verified.",
-
-  "localization_test": "Localization test.",
-  "localization_test_details": "This text demonstrates localization across different languages.",
-
-  "file_upload": "File Upload",
-  "file_uploaded_message": "File uploaded successfully.",
-
-  "metrics_api": "Metrics API",
-  "metrics_api_message": "Retrieve API performance metrics.",
-  "metrics_api_loop_message": "Metrics API: {{time}} seconds (Loop {{loop}}).",
-
-  "user": {
-    "fetched": "User fetched successfully.",
-    "created": "User created successfully."
-  } 
+  "welcomeMessage": "Welcome to the Vendo's API!",
+  "metrics": {
+    "title": "Performance Metrics API",
+    "description": "Retrieve performance metrics of the API.",
+    "execution_summary": "Performance Test: Completed in {{time}} seconds with {{loop}} iterations."
+  },
+  "general": {
+    "api_success": "API is up and running."
+  }
 }

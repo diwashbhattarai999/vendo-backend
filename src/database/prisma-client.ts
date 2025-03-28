@@ -1,17 +1,17 @@
 import { PrismaClient } from '@prisma/client';
-import dotenv from 'dotenv-flow';
 
-dotenv.config();
+import { isDevelopment } from '@/utils/env.utils';
 
-// Initialize Prisma Client
-const prisma = new PrismaClient();
-
-// Graceful shutdown when the app is terminated
-async function shutdown() {
-  await prisma.$disconnect();
+// add prisma to the NodeJS global type
+interface CustomNodeJsGlobal extends Global {
+  prisma: PrismaClient;
 }
 
-process.on('SIGINT', shutdown); // Handles termination signals (Ctrl+C)
-process.on('SIGTERM', shutdown); // Handles termination signals (when stopping in production)
+// Prevent multiple instances of Prisma Client in development
+declare const global: CustomNodeJsGlobal;
+
+const prisma = global.prisma || new PrismaClient();
+
+if (isDevelopment) global.prisma = prisma;
 
 export default prisma;

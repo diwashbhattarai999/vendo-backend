@@ -18,7 +18,7 @@ export const getHealthHandler = asyncCatch(async (req: Request, res: Response) =
   const t = req.t;
 
   // Send the health metrics response
-  sendHttpResponse(res, STATUS_CODES.OK, t('api_health_check_success'), {
+  sendHttpResponse(res, STATUS_CODES.OK, t('general.api_success'), {
     application: getAppHealthMetrics(),
     system: getSystemHealthMetrics(),
     timestamp: Date.now(),

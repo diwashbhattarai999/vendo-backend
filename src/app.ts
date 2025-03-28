@@ -11,8 +11,6 @@ import favicon from 'serve-favicon';
 
 import { env } from '@/config/env';
 
-import { metrics, prometheusMiddleware } from '@/services/prometheus';
-
 import { globalErrorHandler } from '@/middlewares/global.error.handler';
 import { i18nextMiddleware } from '@/middlewares/i18next';
 import { rateLimiter } from '@/middlewares/rate.limiter';
@@ -20,6 +18,8 @@ import { routeNotFoundHandler } from '@/middlewares/route.not.found';
 
 import { rootRouter } from '@/routes/root.route';
 import { router } from '@/routes/v0';
+
+import { metrics, prometheusMiddleware } from '@/metrics/prometheus';
 
 /**
  * Initializes the Express application with middleware and routes.

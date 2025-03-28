@@ -27,13 +27,13 @@ const appVersion = packageJson.version;
 export const rootRouteHandler = asyncCatch(async (req: Request, res: Response) => {
   const t = req.t;
 
-  // Check if the required environment variables are set. If not, throw an error.
+  // Check if the required variables from package.json and .env are available.
   if (!appName || !appVersion || !appEnvironment) {
-    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.INVALID_JSON_CONFIG, t('invalid_package_message', { ns: 'error' }));
+    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.INVALID_JSON_CONFIG, t('invalidJsonConfig', { ns: 'error' }));
   }
 
   // Send a welcome message with the app name, version, and environment.
-  sendHttpResponse(res, 200, t('welcome'), {
+  sendHttpResponse(res, 200, t('welcomeMessage'), {
     appName,
     appVersion,
     appEnvironment,

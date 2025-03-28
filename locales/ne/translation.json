@@ -1,25 +1,11 @@
 {
-  "welcome": "API मा स्वागत छ।",
-  "api_health_check_success": "API सञ्चालनमा छ।",
-  "api_slow_down_test": "API सुस्ताउने मेकानिजम परीक्षण गर्दै।",
-  "no_delay": "कुनै ढिलाइ पत्ता लागेन।",
-  "request_being_slowed_down": "दर सीमाका कारण अनुरोध प्रशोधन सुस्ताइएको छ।",
-
-  "email_sent": "इमेल सफलतापूर्वक पठाइयो।",
-  "api_key_verified": "API कुञ्जी सफलतापूर्वक प्रमाणित गरियो।",
-
-  "localization_test": "स्थानीयकरण परीक्षण।",
-  "localization_test_details": "यो पाठले विभिन्न भाषाहरूमा स्थानीयकरण प्रदर्शन गर्दछ।",
-
-  "file_upload": "फाइल अपलोड",
-  "file_uploaded_message": "फाइल सफलतापूर्वक अपलोड गरियो।",
-
-  "metrics_api": "मेट्रिक्स API",
-  "metrics_api_message": "API प्रदर्शन मेट्रिक्स पुन: प्राप्त गर्नुहोस्।",
-  "metrics_api_loop_message": "मेट्रिक्स API: {{time}} सेकेन्ड (लूप {{loop}})।",
-
-  "user": {
-    "fetched": "प्रयोगकर्ता सफलतापूर्वक प्राप्त गरियो।",
-    "created": "प्रयोगकर्ता सफलतापूर्वक सिर्जना गरियो।"
-  } 
+  "welcomeMessage": "Vendo's API मा स्वागत छ!",
+  "metrics": {
+    "title": "प्रदर्शन मेट्रिक्स API",
+    "description": "API को प्रदर्शन मेट्रिक्स प्राप्त गर्नुहोस्।",
+    "execution_summary": "प्रदर्शन परीक्षण: {{time}} सेकेण्डमा पूरा गरियो र {{loop}} घुमाउनुहोस्।"
+  },
+  "general": {
+    "api_success": "API सुरु र सञ्चालन गरिएको छ।"
+  }
 }

@@ -2,9 +2,8 @@ import { env } from '@/config/env';
 
 import { getLocalIPAddress } from '@/utils/system.utils';
 
-import { logger } from '@/services/winston.logger';
-
 import app from '@/app';
+import { logger } from '@/logger/winston.logger';
 
 /**
  * Starts the server and handles various server operations like logging, error handling, and shutdown.

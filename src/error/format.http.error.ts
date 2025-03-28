@@ -1,11 +1,9 @@
 import type { Request } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
-import { env } from '@/config/env';
-
-import { EApplicationEnvironment } from '@/constant/application';
-
 import type { CustomError } from '@/error/custom.api.error';
+
+import { isDevelopment } from '@/utils/env.utils';
 
 /**
  * This function will format the error response in a structured way.
@@ -29,12 +27,7 @@ export const formatHttpError = (req: Request, error: CustomError) => {
       url: req.originalUrl,
       method: req.method,
       timestamp: error.timestamp.toISOString(),
-
-      /**
-       * @description: This is a DEV mode only feature.
-       * It will show the stack trace of the error.
-       */
-      stack: env.app.NODE_ENV === EApplicationEnvironment.DEVELOPMENT ? error.stack : 'Please enable DEV mode to see the stack trace',
+      ...(isDevelopment && { stack: error.stack }), // Only show stack trace in development environment
     },
   };
 };

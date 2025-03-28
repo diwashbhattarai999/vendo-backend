@@ -6,7 +6,7 @@ import { STATUS_CODES } from '@/constant/status.codes';
 import { CustomError } from '@/error/custom.api.error';
 import { formatHttpError } from '@/error/format.http.error';
 
-import { logger } from '@/services/winston.logger';
+import { logger } from '@/logger/winston.logger';
 
 export function globalErrorHandler(err: CustomError, req: Request, res: Response, next: NextFunction) {
   const t = req.t;

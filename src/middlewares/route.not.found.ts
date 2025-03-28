@@ -5,7 +5,7 @@ import { STATUS_CODES } from '@/constant/status.codes';
 
 import { CustomError } from '@/error/custom.api.error';
 
-import { logger } from '@/services/winston.logger';
+import { logger } from '@/logger/winston.logger';
 
 /**
  * Route not found handler

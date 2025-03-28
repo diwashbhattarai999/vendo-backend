@@ -8,9 +8,9 @@ import { STATUS_CODES } from '@/constant/status.codes';
 
 import { CustomError } from '@/error/custom.api.error';
 
-import { logger } from '@/services/winston.logger';
-
 import type { SendGridEmailType } from '@/schema/sendgrid.email.schema';
+
+import { logger } from '@/logger/winston.logger';
 
 sgMail.setApiKey(env.sendgrid.SENDGRID_API_KEY);
 
