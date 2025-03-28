@@ -16,5 +16,10 @@
 
   "metrics_api": "Metrics API",
   "metrics_api_message": "Retrieve API performance metrics.",
-  "metrics_api_loop_message": "Metrics API: {{time}} seconds (Loop {{loop}})."
+  "metrics_api_loop_message": "Metrics API: {{time}} seconds (Loop {{loop}}).",
+
+  "user": {
+    "fetched": "User fetched successfully.",
+    "created": "User created successfully."
+  } 
 }

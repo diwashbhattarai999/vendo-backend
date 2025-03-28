@@ -27,9 +27,11 @@ export const createUser = asyncCatch(async (req: Request, res: Response) => {
 });
 
 // Get all users
-export const getUsers = async (_req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
+  const t = req.t;
+
   const users = await prisma.user.findMany();
-  sendHttpResponse(res, 200, 'Users fetched successfully', users);
+  sendHttpResponse(res, 200, t('user.fetched'), users);
 };
 
 // Get a user by ID

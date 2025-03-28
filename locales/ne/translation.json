@@ -16,5 +16,10 @@
 
   "metrics_api": "मेट्रिक्स API",
   "metrics_api_message": "API प्रदर्शन मेट्रिक्स पुन: प्राप्त गर्नुहोस्।",
-  "metrics_api_loop_message": "मेट्रिक्स API: {{time}} सेकेन्ड (लूप {{loop}})।"
+  "metrics_api_loop_message": "मेट्रिक्स API: {{time}} सेकेन्ड (लूप {{loop}})।",
+
+  "user": {
+    "fetched": "प्रयोगकर्ता सफलतापूर्वक प्राप्त गरियो।",
+    "created": "प्रयोगकर्ता सफलतापूर्वक सिर्जना गरियो।"
+  } 
 }

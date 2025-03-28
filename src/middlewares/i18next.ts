@@ -1,12 +1,14 @@
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
-import middleware from 'i18next-http-middleware';
+import * as i18middleware from 'i18next-http-middleware';
 
 import { logger } from '@/services/winston.logger';
 
+import pkg from '../../package.json';
+
 i18next
   .use(Backend) // Load translations from file system
-  .use(middleware.LanguageDetector) // Detect language from request
+  .use(i18middleware.LanguageDetector) // Detect language from request
   .init({
     fallbackLng: 'en', // Default language if no match found
     preload: ['en', 'ne'], // Load these languages on startup
@@ -16,11 +18,8 @@ i18next
       loadPath: './locales/{{lng}}/{{ns}}.json', // Translation files path
     },
     detection: {
-      order: ['querystring', 'cookie', 'header'], // Where to look for language (Priority order)
-      lookupQuerystring: 'lng', // Query parameter name, e.g., ?lng=ne
-      lookupCookie: 'i18next', // Cookie name where the language is stored
-      lookupHeader: 'accept-language', // Header to look for language
-      caches: ['cookie'], // Cache language in cookies
+      order: ['header'],
+      lookupHeader: 'accept-language',
     },
     interpolation: {
       escapeValue: true, // Escape HTML (XSS protection) (make it false if you need to render HTML)
@@ -29,18 +28,18 @@ i18next
         if (format === 'lowercase') return value.toLowerCase();
         return value;
       },
-      defaultVariables: { appName: 'ExpressTemplate' }, // Global variables
+      defaultVariables: { appName: pkg.name }, // Global variables
       skipOnVariables: true, // removes keys if variables are missing.
     },
   })
   .then(() => {
-    logger.info('i18next initialized');
+    logger.info('✅ i18next initialized successfully');
   })
   .catch((error) => {
-    logger.error('Error initializing i18next:', error);
+    logger.error(`❌ Error initializing i18next: ${error.message}`);
   });
 
 // Export the middleware handler
-const i18nextMiddleware = middleware.handle(i18next);
+const i18nextMiddleware = i18middleware.handle(i18next);
 
 export { i18nextMiddleware };

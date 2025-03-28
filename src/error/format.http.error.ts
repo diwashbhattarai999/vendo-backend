@@ -19,6 +19,7 @@ export const formatHttpError = (req: Request, error: CustomError) => {
     success: false,
     status: 'error',
     statusCode: error.statusCode,
+    message: error.message,
     error: {
       errorId: uuidv4(),
       name: error.name,
