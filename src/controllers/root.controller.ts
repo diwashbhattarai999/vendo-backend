@@ -9,6 +9,9 @@ import { asyncCatch } from '@/error/async.catch';
 import { CustomError } from '@/error/custom.api.error';
 
 import { sendHttpResponse } from '@/utils/send.http.response';
+import { getAppHealthMetrics, getSystemHealthMetrics } from '@/utils/system.utils';
+
+import type { MetricsType } from '@/schema/metrics.schema';
 
 import packageJson from '@/../package.json';
 
@@ -37,5 +40,54 @@ export const rootRouteHandler = asyncCatch(async (req: Request, res: Response) =
     appName,
     appVersion,
     appEnvironment,
+  });
+});
+
+/**
+ * Handles health check requests.
+ * Returns application and system health metrics.
+ *
+ * @param req - Express Request object.
+ * @param res - Express Response object.
+ */
+export const getHealthHandler = asyncCatch(async (req: Request, res: Response) => {
+  const t = req.t;
+
+  // Send the health metrics response
+  sendHttpResponse(res, STATUS_CODES.OK, t('general.api_success'), {
+    application: getAppHealthMetrics(),
+    system: getSystemHealthMetrics(),
+    timestamp: Date.now(),
+  });
+});
+
+/**
+ * Handler to return performance metrics.
+ *
+ * @param req - Express Request object.
+ * @param res - Express Response object.
+ */
+export const metricsHandler = asyncCatch(async (req: Request<{}, {}, {}, MetricsType['query']>, res: Response) => {
+  const t = req.t;
+  const { loop } = req.query;
+  const loopNumber = Number(loop);
+  let loopCount = 0;
+
+  // Start timing
+  const startTime = Date.now();
+
+  // Loop through the count and execute
+  const promises = Array.from({ length: loopNumber }, () => {
+    loopCount++;
+    return new Promise((resolve) => setTimeout(resolve, 1000));
+  });
+  await Promise.all(promises);
+
+  // Calculate total time taken in seconds
+  const totalTime = (Date.now() - startTime) / 1000;
+
+  sendHttpResponse(res, STATUS_CODES.OK, t('metrics.title'), {
+    message: t('metrics.description'),
+    details: t('metrics.execution_summary', { time: totalTime, loop: loopCount }),
   });
 });
