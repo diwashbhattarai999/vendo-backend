@@ -15,9 +15,49 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String?
-  email      String   @unique
-  password   String?
-  created_at DateTime @default(now())
+  id                String              @id @default(uuid())
+  firstName         String
+  lastName          String
+  email             String              @unique
+  password          String
+  isEmailVerified   Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  Session           Session[]
+  VerificationToken VerificationToken[]
+  userPreferences   UserPreferences?    @relation(fields: [userPreferencesId], references: [id])
+  userPreferencesId String?             @unique
+}
+
+model UserPreferences {
+  id                String  @id @default(uuid())
+  enable2FA         Boolean @default(false)
+  emailNotification Boolean @default(true)
+  twoFactorSecret   String?
+  User              User[]
+  userId            String  @unique
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  userAgent String?
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum VerificationEnum {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+model VerificationToken {
+  id        String           @id @default(uuid())
+  userId    String           @unique
+  token     String           @unique
+  type      VerificationEnum
+  createdAt DateTime         @default(now())
+  expiresAt DateTime
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

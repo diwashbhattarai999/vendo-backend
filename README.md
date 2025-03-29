@@ -99,7 +99,7 @@ You can find the Postman Collection for API documentation here:
 - **Slow Down**: **express-slow-down** for delaying requests and reducing the impact of high traffic.
 - **File Upload Handling**: **Multer** for handling file uploads.
 - **API Key Implementation**: Protection of sensitive routes using API keys.
-- **Sending Emails**: Email sending via **SendGrid** for notifications and alerts.
+- **Sending Emails**: Email sending via **Resend** for notifications and alerts.
 - **Metrics (Analytics)**: **Prom-client** for tracking application metrics and statistics.
 - **Docker**: Containerization using **Docker** for development and production environments.
 - **CI/CD**: Integrated **GitHub Actions** for Continuous Integration and Continuous Deployment pipelines.

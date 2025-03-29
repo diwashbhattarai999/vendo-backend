@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, RequestHandler, Response } from 'express';
 
 /**
  * Generic type for asynchronous Express route handlers or middleware
@@ -24,7 +24,7 @@ export type TAsyncFunction<P = unknown, ResBody = unknown, ReqBody = unknown, Re
  */
 export function asyncCatch<P = unknown, ResBody = unknown, ReqBody = unknown, ReqQuery = unknown>(
   fn: TAsyncFunction<P, ResBody, ReqBody, ReqQuery>,
-): (req: Request<P, ResBody, ReqBody, ReqQuery>, res: Response, next: NextFunction) => void {
+): RequestHandler<P, ResBody, ReqBody, ReqQuery> {
   return (req: Request<P, ResBody, ReqBody, ReqQuery>, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };

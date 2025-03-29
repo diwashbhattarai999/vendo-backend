@@ -1,5 +1,7 @@
 import { Router } from 'express';
 
+import { authRouter } from './auth.routes';
+
 /**
  * Main router for version 0 of the API.
  *
@@ -9,6 +11,8 @@ import { Router } from 'express';
  * @returns {Router} Configured Express router for version 0 of the API.
  */
 const router = Router();
+
+router.use('/auth', authRouter);
 
 // More routers can be added here for other versioned API endpoints
 

@@ -17,13 +17,9 @@ export const envSchema = z.object({
      * The environment in which the application is running.
      * Can be one of "development", "production", "staging", or "test".
      */
-    NODE_ENV: z
-      .enum(['development', 'production', 'staging', 'test'], {
-        required_error: 'NODE_ENV is required and should be one of "development", "production", "staging", or "test".',
-      })
-      .refine((val) => !!val, {
-        message: 'NODE_ENV is required and should be one of "development", "production", "staging", or "test".',
-      }),
+    NODE_ENV: z.enum(['development', 'production', 'staging', 'test'], {
+      required_error: 'NODE_ENV is required and should be one of "development", "production", "staging", or "test".',
+    }),
 
     /**
      * The port number for the server to listen on.
@@ -46,15 +42,12 @@ export const envSchema = z.object({
      * The client URL for frontend interactions with the application.
      * Must be a valid URL.
      */
-    CLIENT_URL: z
-      .string({ required_error: 'CLIENT_URL is required.' })
-      .url({ message: 'CLIENT_URL must be a valid URL.' })
-      .refine((val) => !!val, { message: 'CLIENT_URL must be a valid URL.' }),
+    CLIENT_URL: z.string({ required_error: 'CLIENT_URL is required.' }).url({ message: 'CLIENT_URL must be a valid URL.' }),
 
     /**
      * API key for accessing and authenticating the application.
      */
-    API_KEY: z.string({ required_error: 'API_KEY is required.' }).refine((val) => !!val, { message: 'API_KEY is required.' }),
+    API_KEY: z.string({ required_error: 'API_KEY is required.' }),
 
     /**
      * Flag to disable the rate limiter if the value is a truthy string (e.g., "true", "1").
@@ -75,40 +68,12 @@ export const envSchema = z.object({
       }),
   }),
 
-  twilio: z.object({
-    /** Twilio Account SID */
-    TWILIO_ACCOUNT_SID: z
-      .string({ required_error: 'TWILIO_ACCOUNT_SID is required' })
-      .refine((val) => !!val, { message: 'TWILIO_ACCOUNT_SID is required.' }),
+  resend: z.object({
+    /** Resend API Key */
+    RESEND_API_KEY: z.string({ required_error: 'RESEND_API_KEY is required.' }),
 
-    /** Twilio Authentication Token */
-    TWILIO_AUTH_TOKEN: z
-      .string({ required_error: 'TWILIO_AUTH_TOKEN is required.' })
-      .refine((val) => !!val, { message: 'TWILIO_AUTH_TOKEN is required.' }),
-
-    /** Twilio Service SID */
-    TWILIO_SERVICE_SID: z
-      .string({ required_error: 'TWILIO_SERVICE_SID is required.' })
-      .refine((val) => !!val, { message: 'TWILIO_SERVICE_SID is required.' }),
-  }),
-
-  sendgrid: z.object({
-    /** SendGrid API Key */
-    SENDGRID_API_KEY: z
-      .string({ required_error: 'SENDGRID_API_KEY is required.' })
-      .refine((val) => !!val, { message: 'SENDGRID_API_KEY is required.' }),
-
-    /** Email address used to send emails via SendGrid */
-    SENDGRID_FROM_EMAIL: z
-      .string({ required_error: 'SENDGRID_FROM_EMAIL is required and must be a valid email address.' })
-      .email()
-      .refine((val) => !!val, { message: 'SENDGRID_FROM_EMAIL is required and must be a valid email address.' }),
-  }),
-
-  template: z.object({
-    TEMPLATE_WELCOME: z
-      .string({ required_error: 'TEMPLATE_WELCOME is required.' })
-      .refine((val) => !!val, { message: 'TEMPLATE_WELCOME is required.' }),
+    /** Email address used to send emails via Resend */
+    RESEND_DOMAIN: z.string({ required_error: 'RESEND_DOMAIN is required.' }),
   }),
 });
 
