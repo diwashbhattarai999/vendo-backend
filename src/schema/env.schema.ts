@@ -39,6 +39,12 @@ export const envSchema = z.object({
     }),
 
     /**
+     * The URL for the database connection.
+     * Must be a valid URL.
+     */
+    BASE_URL: z.string({ required_error: 'BASE_URL is required.' }).url({ message: 'BASE_URL must be a valid URL.' }),
+
+    /**
      * The client URL for frontend interactions with the application.
      * Must be a valid URL.
      */
@@ -75,6 +81,44 @@ export const envSchema = z.object({
     /** Email address used to send emails via Resend */
     RESEND_DOMAIN: z.string({ required_error: 'RESEND_DOMAIN is required.' }),
   }),
+
+  jwt: z
+    .object({
+      /** JWT Access Token Secret */
+      ACCESS_TOKEN_SECRET: z.string({ required_error: 'JWT_ACCESS_TOKEN_SECRET is required.' }).min(32, {
+        message: 'JWT_ACCESS_TOKEN_SECRET must be at least 32 characters long.',
+      }),
+
+      /**
+       * Token expiration time, must be a string in the format of "15m", "1h", "2d", etc.
+       * The regex checks for a number followed by a single character (s, m, h, d).
+       */
+      EXPIRES_IN: z.string({ required_error: 'EXPIRES_IN is required.' }).refine(
+        (val) => {
+          const regex = /^\d+[smhd]$/;
+          return regex.test(val);
+        },
+        { message: 'EXPIRES_IN must be a string like "15m", "1h", "2d", etc.' },
+      ),
+
+      /** JWT Refresh Token Secret */
+      REFRESH_TOKEN_SECRET: z.string({ required_error: 'JWT_REFRESH_TOKEN_SECRET is required.' }).min(32, {
+        message: 'JWT_REFRESH_TOKEN_SECRET must be at least 32 characters long.',
+      }),
+
+      /**
+       * Token expiration time, must be a string in the format of "15m", "1h", "2d", etc.
+       * The regex checks for a number followed by a single character (s, m, h, d).
+       */
+      REFRESH_EXPIRES_IN: z.string({ required_error: 'REFRESH_EXPIRES_IN is required.' }).refine(
+        (val) => {
+          const regex = /^\d+[smhd]$/;
+          return regex.test(val);
+        },
+        { message: 'REFRESH_EXPIRES_IN must be a string like "15m", "1h", "2d", etc.' },
+      ),
+    })
+    .strict(),
 });
 
 /**

@@ -4,10 +4,13 @@ import { STATUS_CODES } from '@/constant/status.codes';
 
 import { asyncCatch } from '@/error/async.catch';
 
+import { setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
+import { loginService } from '@/services/auth/login.service';
 import { registerService } from '@/services/auth/register.service';
 
+import type { LoginType } from '@/schema/auth/login.schema';
 import type { RegisterType } from '@/schema/auth/register.schema';
 
 /**
@@ -16,16 +19,36 @@ import type { RegisterType } from '@/schema/auth/register.schema';
  * - password: The user's password.
  * - firstName: The user's first name.
  * - lastName: The user's last name.
- * - phoneNumber: The user's phone number.
  */
 export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterType['body']>, res, _next) => {
+  const t = req.t;
+
+  // Call the register service to create a new user
   const newUser = await registerService({ ...req.body });
-  sendHttpResponse(res, STATUS_CODES.CREATED, 'User created successfully', newUser);
+
+  // Send a success response with the new user's information
+  sendHttpResponse(res, STATUS_CODES.CREATED, t('auth.register.success'), newUser);
 });
 
 // Login API Controller
-export const loginHandler: RequestHandler = asyncCatch(async (_req, res, _next) => {
-  res.send('Login API Route');
+export const loginHandler: RequestHandler = asyncCatch(async (req: Request<{}, {}, LoginType['body']>, res, _next) => {
+  const t = req.t;
+  const userAgent = req.headers['user-agent'];
+
+  // Call the login service to authenticate the user
+  const { user, accessToken, refreshToken, mfaRequired } = await loginService({ ...req.body, userAgent });
+
+  // Set authentication cookies
+  setAuthenticationCookies({ res, accessToken, refreshToken });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We need to remove the password from the response
+  const { password, ...userWithoutPassword } = user;
+
+  // Send a success response with the user's information and tokens
+  sendHttpResponse(res, STATUS_CODES.OK, t('auth.login.success'), {
+    user: userWithoutPassword,
+    mfaRequired,
+  });
 });
 
 // Refresh API Controller
