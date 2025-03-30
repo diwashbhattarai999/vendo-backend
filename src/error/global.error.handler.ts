@@ -6,10 +6,15 @@ import { STATUS_CODES } from '@/constant/status.codes';
 import { CustomError } from '@/error/custom.api.error';
 import { formatHttpError } from '@/error/format.http.error';
 
+import { clearAuthenticationCookies, REFRESH_PATH } from '@/utils/cookie';
+
 import { logger } from '@/logger/winston.logger';
 
 export function globalErrorHandler(err: CustomError, req: Request, res: Response, next: NextFunction) {
   const t = req.t;
+
+  // Clear authentication cookies if the request path is for refresh
+  if (req.path === REFRESH_PATH) clearAuthenticationCookies(res);
 
   /**
    * Create an instance of CustomError

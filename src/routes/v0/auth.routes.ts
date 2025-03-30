@@ -14,6 +14,7 @@ import {
 
 import { validateSchema } from '@/middlewares/schema.validation';
 
+import { loginSchema } from '@/schema/auth/login.schema';
 import { registerSchema } from '@/schema/auth/register.schema';
 
 const authRouter = Router();
@@ -22,7 +23,7 @@ const authRouter = Router();
 authRouter.post('/register', validateSchema(registerSchema), registerHandler);
 
 // Login API Route
-authRouter.post('/login', loginHandler);
+authRouter.post('/login', validateSchema(loginSchema), loginHandler);
 
 // Refresh API Route
 authRouter.post('/refresh', refreshHandler);

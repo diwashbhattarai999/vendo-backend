@@ -11,6 +11,7 @@ const parsedEnv = envSchema.safeParse({
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
     LOG_LEVEL: process.env.LOG_LEVEL,
+    BASE_URL: `${process.env.BASE_URL}/api/v0`,
     CLIENT_URL: process.env.CLIENT_URL,
     API_KEY: process.env.API_KEY,
     DISABLE_RATE_LIMITER: process.env.DISABLE_RATE_LIMITER,
@@ -19,7 +20,13 @@ const parsedEnv = envSchema.safeParse({
   resend: {
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_DOMAIN: process.env.RESEND_DOMAIN,
-  }
+  },
+  jwt: {
+    ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET,
+    EXPIRES_IN: process.env.EXPIRES_IN,
+    REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET,
+    REFRESH_EXPIRES_IN: process.env.REFRESH_EXPIRES_IN,
+  },
 });
 
 /**

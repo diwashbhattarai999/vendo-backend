@@ -7,5 +7,15 @@
   },
   "general": {
     "api_success": "API is up and running."
+  },
+  "auth": {
+    "register": {
+      "success": "User registered successfully.",
+      "failure": "User registration failed."
+    },
+    "login": {
+      "success": "User logged in successfully.",
+      "failure": "User login failed."
+    }
   }
 }
