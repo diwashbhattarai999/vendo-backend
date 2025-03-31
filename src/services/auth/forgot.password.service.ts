@@ -11,7 +11,7 @@ import { CustomError } from '@/error/custom.api.error';
 import { anHourFromNow, threeMinutesAgo } from '@/utils/date.time';
 
 import { getUserByEmail } from '../user.service';
-import { countVerificationTokens, generateVerificationToken } from '../verification.service';
+import { countVerificationTokens, generateVerificationTokenForPasswordReset } from '../verification.service';
 
 import { sendEmail } from '@/mailers/mailer';
 import { passwordResetTemplate } from '@/mailers/templates/password.reset.template';
@@ -34,7 +34,7 @@ export const forgotPasswordService = async (t: TFunction, email: string) => {
 
   // Generate a new password reset token, valid for 1 hour
   const expiresAt = anHourFromNow();
-  const validToken = await generateVerificationToken({ userId: user.id, type: VERIFICATION_TYPES.PASSWORD_RESET, expiresAt });
+  const validToken = await generateVerificationTokenForPasswordReset({ userId: user.id, type: VERIFICATION_TYPES.PASSWORD_RESET, expiresAt });
 
   // Send the password reset email to the user, including the reset link with the token and expiration time
   const resetLink = `${env.app.CLIENT_URL}/reset-password?token=${validToken.token}&exp=${expiresAt.getTime()}`;

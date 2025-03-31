@@ -34,6 +34,14 @@ export const generateVerificationTokenForEmail = async (payload: VerificationPay
   return await generateVerificationToken({ ...payload });
 };
 
+export const generateVerificationTokenForPasswordReset = async (payload: VerificationPayload): Promise<VerificationToken> => {
+  // If a expired verification token already exists, delete all expired tokens
+  await prisma.verificationToken.deleteMany({ where: { userId: payload.userId, type: payload.type, expiresAt: { lt: new Date() } } });
+
+  // Generate and return a new verification token
+  return await generateVerificationToken({ ...payload });
+};
+
 export const findVerificationToken = async (
   token: string,
   type: VERIFICATION_TYPES,
@@ -47,5 +55,5 @@ export const deleteVerificationToken = async (token: string, type: VERIFICATION_
 };
 
 export const countVerificationTokens = async (userId: string, type: VERIFICATION_TYPES, timeAgo: Date): Promise<number> => {
-  return await prisma.verificationToken.count({ where: { userId, type, expiresAt: { gte: timeAgo } } });
+  return await prisma.verificationToken.count({ where: { userId, type, createdAt: { gt: timeAgo } } });
 };
