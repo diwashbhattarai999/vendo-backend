@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-import { emailSchema, passwordSchema } from '../common.schema';
+import { confirmPasswordSchema, emailSchema, passwordSchema } from '../common.schema';
 
 /**
  * Schema for user registration data.
@@ -12,7 +12,7 @@ export const registerSchema = z.object({
     .object({
       email: emailSchema,
       password: passwordSchema,
-      confirmPassword: passwordSchema,
+      confirmPassword: confirmPasswordSchema,
       firstName: z.string({ required_error: 'First name is required' }).min(1, { message: 'First name is too short' }),
       lastName: z.string({ required_error: 'Last name is required' }).min(1, { message: 'Last name is too short' }),
     })

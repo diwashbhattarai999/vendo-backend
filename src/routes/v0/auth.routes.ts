@@ -15,37 +15,26 @@ import {
 import { validateSchema } from '@/middlewares/schema.validation';
 
 import { loginSchema } from '@/schema/auth/login.schema';
-import { forgotPasswordSchema } from '@/schema/auth/password.schema';
+import { forgotPasswordSchema, resetPasswordSchema } from '@/schema/auth/password.schema';
 import { registerSchema } from '@/schema/auth/register.schema';
 import { verifyEmailSchema } from '@/schema/auth/verify.email.schema';
 
 const authRouter = Router();
 
-// Register API Route
 authRouter.post('/register', validateSchema(registerSchema), registerHandler);
-
-// Login API Route
 authRouter.post('/login', validateSchema(loginSchema), loginHandler);
 
-// Refresh API Route
 authRouter.get('/refresh', refreshTokenHandler);
 
-// Verify Email API Route
 authRouter.post('/verify/email', validateSchema(verifyEmailSchema), verifyEmailHandler);
 
-// Forgot Password API Route
 authRouter.post('/password/forgot', validateSchema(forgotPasswordSchema), forgotPasswordHandler);
+authRouter.post('/password/reset', validateSchema(resetPasswordSchema), resetPasswordHandler);
 
-// Reset Password API Route
-authRouter.post('/reset-password', resetPasswordHandler);
-
-// Logout API Route
 authRouter.post('/logout', logoutHandler);
 
-// Sessions API Route
 authRouter.get('/sessions', sessionsHandler);
 
-// 2FA API Route
 authRouter.post('/2fa', twoFactorAuthHandler);
 
 export { authRouter };

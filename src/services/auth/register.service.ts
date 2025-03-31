@@ -44,7 +44,7 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
   // Create a new user in the database
   const newUser = await createUser({ email, password: hashedPassword, firstName, lastName });
 
-  // Create a verification code for the new user
+  // Create a verification token for the new user
   const verification = await generateVerificationTokenForEmail({
     userId: newUser.id,
     expiresAt: fortyFiveMinutesFromNow(),

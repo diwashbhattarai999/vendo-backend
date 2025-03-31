@@ -1,4 +1,4 @@
-import type { Request, RequestHandler } from 'express';
+import type { Request } from 'express';
 
 import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
@@ -13,10 +13,13 @@ import { forgotPasswordService } from '@/services/auth/forgot.password.service';
 import { loginService } from '@/services/auth/login.service';
 import { refreshTokenService } from '@/services/auth/refresh.token.service';
 import { registerService } from '@/services/auth/register.service';
+import { resetPasswordService } from '@/services/auth/reset.password.service';
 import { verifyEmailService } from '@/services/auth/verify.email.service';
 
 import type { LoginType } from '@/schema/auth/login.schema';
+import type { ForgotPasswordType, ResetPasswordType } from '@/schema/auth/password.schema';
 import type { RegisterType } from '@/schema/auth/register.schema';
+import type { VerifyEmailType } from '@/schema/auth/verify.email.schema';
 
 /**
  * Register API Controller
@@ -38,7 +41,7 @@ export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterTy
  * Handles user login by validating the request body,
  * calling the login service, and sending a response.
  */
-export const loginHandler: RequestHandler = asyncCatch(async (req: Request<{}, {}, LoginType['body']>, res, _next) => {
+export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['body']>, res, _next) => {
   const t = req.t;
   const userAgent = req.headers['user-agent'];
 
@@ -57,7 +60,7 @@ export const loginHandler: RequestHandler = asyncCatch(async (req: Request<{}, {
  * Handles token refresh by extracting the refresh token from cookies,
  * calling the refresh token service, and sending a new access token.
  */
-export const refreshTokenHandler: RequestHandler = asyncCatch(async (req, res, _next) => {
+export const refreshTokenHandler = asyncCatch(async (req, res, _next) => {
   const t = req.t;
 
   // Extract the refresh token from the request cookies
@@ -83,43 +86,57 @@ export const refreshTokenHandler: RequestHandler = asyncCatch(async (req, res, _
  * Handles email verification by validating the request body,
  * calling the verify email service, and sending a response.
  */
-export const verifyEmailHandler: RequestHandler = asyncCatch(async (req, res, _next) => {
+export const verifyEmailHandler = asyncCatch(async (req: Request<{}, {}, VerifyEmailType['body']>, res, _next) => {
   const t = req.t;
 
   // Call the verify email service to verify the user's email
-  await verifyEmailService(t, req.body.code);
+  await verifyEmailService(t, req.body.verificationToken);
 
   // Send a success response indicating that the email verification was successful
   sendHttpResponse(res, STATUS_CODES.OK, t('verify_email.success', { ns: 'auth' }));
 });
 
-// Forgot Password API Controller
-export const forgotPasswordHandler: RequestHandler = asyncCatch(async (req, res, _next) => {
+/**
+ * Forgot Password API Controller
+ * Handles password reset requests by validating the request body,
+ * calling the forgot password service, and sending a response.
+ */
+export const forgotPasswordHandler = asyncCatch(async (req: Request<{}, {}, ForgotPasswordType['body']>, res, _next) => {
   const t = req.t;
 
   // Call the forgot password service to send a password reset email
-  const forgotPasswordResposne = await forgotPasswordService(t, req.body.email);
+  await forgotPasswordService(t, req.body.email);
 
   // Send a success response indicating that the password reset email was sent
-  sendHttpResponse(res, STATUS_CODES.OK, t('forgot_password.success', { ns: 'auth' }), forgotPasswordResposne);
+  sendHttpResponse(res, STATUS_CODES.OK, t('forgot_password.success', { ns: 'auth' }));
 });
 
-// Reset Password API Controller
-export const resetPasswordHandler: RequestHandler = asyncCatch(async (_req, res, _next) => {
-  res.send('Reset Password API Route');
+/**
+ * Reset Password API Controller
+ * Handles password reset by validating the request body,
+ * calling the reset password service, and sending a response.
+ */
+export const resetPasswordHandler = asyncCatch(async (req: Request<{}, {}, ResetPasswordType['body']>, res, _next) => {
+  const t = req.t;
+
+  // Call the reset password service to reset the user's password
+  const { user } = await resetPasswordService(t, { ...req.body });
+
+  // Send a success response indicating that the password was reset successfully
+  sendHttpResponse(res, STATUS_CODES.OK, t('reset_password.success', { ns: 'auth' }), { user });
 });
 
 // Logout API Controller
-export const logoutHandler: RequestHandler = asyncCatch(async (_req, res, _next) => {
+export const logoutHandler = asyncCatch(async (_req, res, _next) => {
   res.send('Logout API Route');
 });
 
 // Sessions API Controller
-export const sessionsHandler: RequestHandler = asyncCatch(async (_req, res, _next) => {
+export const sessionsHandler = asyncCatch(async (_req, res, _next) => {
   res.send('Sessions API Route');
 });
 
 // 2FA API Controller
-export const twoFactorAuthHandler: RequestHandler = asyncCatch(async (_req, res, _next) => {
+export const twoFactorAuthHandler = asyncCatch(async (_req, res, _next) => {
   res.send('2FA API Route');
 });

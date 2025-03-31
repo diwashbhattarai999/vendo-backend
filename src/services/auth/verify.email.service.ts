@@ -9,9 +9,9 @@ import { CustomError } from '@/error/custom.api.error';
 import { updateUser } from '../user.service';
 import { deleteVerificationToken, findVerificationToken } from '../verification.service';
 
-export const verifyEmailService = async (t: TFunction, code: string) => {
-  // Check if the verification code is provided, if not, throw an error
-  const validToken = await findVerificationToken(code, VERIFICATION_TYPES.EMAIL_VERIFICATION);
+export const verifyEmailService = async (t: TFunction, token: string) => {
+  // Check if the verification token is provided, if not, throw an error
+  const validToken = await findVerificationToken(token, VERIFICATION_TYPES.EMAIL_VERIFICATION);
   if (!validToken)
     throw new CustomError(
       STATUS_CODES.BAD_REQUEST,
@@ -19,7 +19,7 @@ export const verifyEmailService = async (t: TFunction, code: string) => {
       t('verify_email.invlalid_or_expired_token', { ns: 'auth' }),
     );
 
-  // If the verification code is valid, update the user's email verification status
+  // If the verification token is valid, update the user's email verification status
   const updatedUser = await updateUser(validToken.userId, { isEmailVerified: true });
 
   // If the user is not found or the update fails, throw an error

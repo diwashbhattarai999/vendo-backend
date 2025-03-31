@@ -3,7 +3,7 @@ import type { Prisma, VerificationToken } from '@prisma/client';
 import type { VERIFICATION_TYPES } from '@/constant/verification.enum';
 
 import { anHourFromNow } from '@/utils/date.time';
-import { generateUniqueCode } from '@/utils/uuid';
+import { generateUniqueToken } from '@/utils/uuid';
 
 import prisma from '@/database/prisma-client';
 
@@ -17,7 +17,7 @@ export const generateVerificationToken = async (payload: VerificationPayload): P
   const { userId, type, expiresAt = anHourFromNow() } = payload;
 
   // Generate a unique token
-  const token = generateUniqueCode();
+  const token = generateUniqueToken();
 
   // Create a new verification token in the database
   return await prisma.verificationToken.create({ data: { userId, token, expiresAt, type } });
