@@ -1,4 +1,4 @@
-import type { Request } from 'express';
+import type { TFunction } from 'i18next';
 
 import { env } from '@/config/env';
 
@@ -22,9 +22,7 @@ import prisma from '@/database/prisma-client';
  * @param {string} refreshToken - The refresh token to verify.
  * @returns {Promise<{ accessToken: string; newRefreshToken?: string }>} - The new access token and optional refresh token.
  */
-export const refreshTokenService = async (req: Request, refreshToken: string): Promise<{ accessToken: string; newRefreshToken?: string }> => {
-  const t = req.t;
-
+export const refreshTokenService = async (t: TFunction, refreshToken: string): Promise<{ accessToken: string; newRefreshToken?: string }> => {
   // Verify the refresh token and extract the payload
   const { payload } = verifyJwtToken<RefreshTPayload>(refreshToken, { secret: refreshTokenSignOptions.secret });
   if (!payload) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_REFRESH_TOKEN_INVALID, t('refresh_token.invalid', { ns: 'auth' }));

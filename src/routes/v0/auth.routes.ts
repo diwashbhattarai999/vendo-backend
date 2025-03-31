@@ -16,6 +16,7 @@ import { validateSchema } from '@/middlewares/schema.validation';
 
 import { loginSchema } from '@/schema/auth/login.schema';
 import { registerSchema } from '@/schema/auth/register.schema';
+import { verifyEmailSchema } from '@/schema/auth/verify.email.schema';
 
 const authRouter = Router();
 
@@ -29,7 +30,7 @@ authRouter.post('/login', validateSchema(loginSchema), loginHandler);
 authRouter.get('/refresh', refreshTokenHandler);
 
 // Verify Email API Route
-authRouter.post('/verify-email', verifyEmailHandler);
+authRouter.post('/verify-email', validateSchema(verifyEmailSchema), verifyEmailHandler);
 
 // Forgot Password API Route
 authRouter.post('/forgot-password', forgotPasswordHandler);

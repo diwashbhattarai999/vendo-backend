@@ -1,4 +1,4 @@
-import type { Request } from 'express';
+import type { TFunction } from 'i18next';
 
 import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
@@ -15,9 +15,10 @@ import { getUserByEmail } from '../user.service';
 
 import prisma from '@/database/prisma-client';
 
-export const loginService = async (req: Request<{}, {}, LoginType['body']>, userAgent?: string) => {
-  const t = req.t;
-  const { email, password } = req.body;
+type LoginServicePayload = LoginType['body'] & { userAgent?: string };
+
+export const loginService = async (t: TFunction, payload: LoginServicePayload) => {
+  const { email, password, userAgent } = payload;
 
   // Check if the user exists, if not, throw an error
   const user = await getUserByEmail(email);

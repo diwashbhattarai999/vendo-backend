@@ -33,3 +33,11 @@ export const generateVerificationToken = async (payload: GenerateVerificationTok
 
   return await prisma.verificationToken.create({ data: { token, ...payload } });
 };
+
+export const findVerificationToken = async (token: string, type: VERIFICATION_TYPES): Promise<VerificationToken | null> => {
+  return await prisma.verificationToken.findFirst({ where: { token, type, expiresAt: { gte: new Date() } } });
+};
+
+export const deleteVerificationToken = async (token: string, type: VERIFICATION_TYPES, userId: string): Promise<VerificationToken | null> => {
+  return await prisma.verificationToken.delete({ where: { token, type, userId } });
+};

@@ -21,3 +21,7 @@ export const getUserByEmail = async (email: string): Promise<User | null> => awa
 export const createUser = async (userData: { email: string; password: string; firstName: string; lastName: string }): Promise<User> => {
   return await prisma.user.create({ data: { ...userData, email: userData.email.toLowerCase() } });
 };
+
+export const updateUser = async (userId: string, data: Partial<User>): Promise<User> => {
+  return await prisma.user.update({ where: { id: userId }, data });
+};
