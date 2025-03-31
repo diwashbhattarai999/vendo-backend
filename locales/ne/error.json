@@ -1,14 +1,14 @@
 {
   "general_error_message": "अनपेक्षित त्रुटि उत्पन्न भयो।",
-  "too_many_requests_message": "धेरै अनुरोधहरू। कृपया केही बेर कुर्नुहोस्।",
-  "invalidJsonConfig" : "अमान्य JSON कन्फिगरेसन।",
+  "too_many_requests": "धेरै अनुरोधहरू। कृपया केही बेर कुर्नुहोस्।",
+  "invalidJsonConfig": "अमान्य JSON कन्फिगरेसन।",
   "route_not_found_message": "अनुरोधित मार्ग फेला परेन।",
   "throttling_message": "अनुरोध सीमित गरिएको छ। तपाईँका अनुरोधहरू ढिलो गरिएका छन्।",
   "unauthorized": "पहुँच अस्वीकृत। तपाईँलाई यो संसाधन पहुँच गर्न अनुमति छैन।",
   "api_key_not_found_message": "API कुञ्जी फेला परेन।",
   "api_key_not_matched_message": "API कुञ्जी मिलेन।",
-  "email_not_sent_message": "इमेल पठाउन असफल।",
   "schema_validation_error": "डाटा प्रमाणीकरण असफल भयो। कृपया इनपुट पुन: जाँच गर्नुहोस्।",
-  "invalid_request_body": "अमान्य JSON अनुरोध शरीर। कृपया तपाईंको अनुरोध शरीर जाँच गर्नुहोस् र पुन: प्रयास गर्नुहोस्।"
-}
+  "invalid_request_body": "अमान्य JSON अनुरोध शरीर। कृपया तपाईंको अनुरोध शरीर जाँच गर्नुहोस् र पुन: प्रयास गर्नुहोस्।",
 
+  "email_send_failed": "इमेल पठाउन असफल।"
+}

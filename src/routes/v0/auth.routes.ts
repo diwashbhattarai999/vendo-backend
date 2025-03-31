@@ -15,6 +15,7 @@ import {
 import { validateSchema } from '@/middlewares/schema.validation';
 
 import { loginSchema } from '@/schema/auth/login.schema';
+import { forgotPasswordSchema } from '@/schema/auth/password.schema';
 import { registerSchema } from '@/schema/auth/register.schema';
 import { verifyEmailSchema } from '@/schema/auth/verify.email.schema';
 
@@ -30,10 +31,10 @@ authRouter.post('/login', validateSchema(loginSchema), loginHandler);
 authRouter.get('/refresh', refreshTokenHandler);
 
 // Verify Email API Route
-authRouter.post('/verify-email', validateSchema(verifyEmailSchema), verifyEmailHandler);
+authRouter.post('/verify/email', validateSchema(verifyEmailSchema), verifyEmailHandler);
 
 // Forgot Password API Route
-authRouter.post('/forgot-password', forgotPasswordHandler);
+authRouter.post('/password/forgot', validateSchema(forgotPasswordSchema), forgotPasswordHandler);
 
 // Reset Password API Route
 authRouter.post('/reset-password', resetPasswordHandler);
