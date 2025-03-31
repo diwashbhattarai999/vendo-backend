@@ -12,7 +12,7 @@ i18next
   .init({
     fallbackLng: 'en', // Default language if no match found
     preload: ['en', 'ne'], // Load these languages on startup
-    ns: ['translation', 'error'], // list of Namespace (useful for modular translations)
+    ns: ['translation', 'error', 'auth'], // list of Namespace (useful for modular translations)
     defaultNS: 'translation', // Default namespace
     backend: {
       loadPath: './locales/{{lng}}/{{ns}}.json', // Translation files path

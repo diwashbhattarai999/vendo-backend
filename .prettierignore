@@ -31,7 +31,6 @@ config
 # Ignore other unnecessary files/folders:
 *.md
 *.txt
-*.json
 
 # Ignore docker files:
 Dockerfile.*

@@ -4,7 +4,7 @@ import {
   forgotPasswordHandler,
   loginHandler,
   logoutHandler,
-  refreshHandler,
+  refreshTokenHandler,
   registerHandler,
   resetPasswordHandler,
   sessionsHandler,
@@ -26,7 +26,7 @@ authRouter.post('/register', validateSchema(registerSchema), registerHandler);
 authRouter.post('/login', validateSchema(loginSchema), loginHandler);
 
 // Refresh API Route
-authRouter.post('/refresh', refreshHandler);
+authRouter.get('/refresh', refreshTokenHandler);
 
 // Verify Email API Route
 authRouter.post('/verify-email', verifyEmailHandler);

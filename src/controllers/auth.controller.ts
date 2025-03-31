@@ -1,59 +1,78 @@
 import type { Request, RequestHandler } from 'express';
 
+import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
 
 import { asyncCatch } from '@/error/async.catch';
+import { CustomError } from '@/error/custom.api.error';
 
-import { setAuthenticationCookies } from '@/utils/cookie';
+import { getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
 import { loginService } from '@/services/auth/login.service';
+import { refreshTokenService } from '@/services/auth/refresh.token.service';
 import { registerService } from '@/services/auth/register.service';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 import type { RegisterType } from '@/schema/auth/register.schema';
 
 /**
- * This function handles the signup process for new users. It expects a request object with the following properties:
- * - email: The user's email address.
- * - password: The user's password.
- * - firstName: The user's first name.
- * - lastName: The user's last name.
+ * Register API Controller
+ * Handles user registration by validating the request body,
+ * calling the register service, and sending a response.
  */
 export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterType['body']>, res, _next) => {
   const t = req.t;
 
   // Call the register service to create a new user
-  const newUser = await registerService({ ...req.body });
+  const newUser = await registerService(req);
 
   // Send a success response with the new user's information
-  sendHttpResponse(res, STATUS_CODES.CREATED, t('auth.register.success'), newUser);
+  sendHttpResponse(res, STATUS_CODES.CREATED, t('register.success', { ns: 'auth' }), newUser);
 });
 
-// Login API Controller
+/**
+ * Login API Controller
+ * Handles user login by validating the request body,
+ * calling the login service, and sending a response.
+ */
 export const loginHandler: RequestHandler = asyncCatch(async (req: Request<{}, {}, LoginType['body']>, res, _next) => {
   const t = req.t;
   const userAgent = req.headers['user-agent'];
 
   // Call the login service to authenticate the user
-  const { user, accessToken, refreshToken, mfaRequired } = await loginService({ ...req.body, userAgent });
+  const { user, accessToken, refreshToken, mfaRequired } = await loginService(req, userAgent);
 
   // Set authentication cookies
   setAuthenticationCookies({ res, accessToken, refreshToken });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We need to remove the password from the response
-  const { password, ...userWithoutPassword } = user;
-
   // Send a success response with the user's information and tokens
-  sendHttpResponse(res, STATUS_CODES.OK, t('auth.login.success'), {
-    user: userWithoutPassword,
-    mfaRequired,
-  });
+  sendHttpResponse(res, STATUS_CODES.OK, t('login.success', { ns: 'auth' }), { user, mfaRequired });
 });
 
-// Refresh API Controller
-export const refreshHandler: RequestHandler = asyncCatch(async (_req, res, _next) => {
-  res.send('Refresh API Route');
+/**
+ * Refresh API Controller
+ * Handles token refresh by extracting the refresh token from cookies,
+ * calling the refresh token service, and sending a new access token.
+ */
+export const refreshTokenHandler: RequestHandler = asyncCatch(async (req, res, _next) => {
+  const t = req.t;
+
+  // Extract the refresh token from the request cookies
+  const refreshToken = req.cookies.refreshToken as string | undefined;
+
+  // Check if the refresh token is provided
+  if (!refreshToken)
+    throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_REFRESH_TOKEN_NOT_PROVIDED, t('refresh_token.not_provided', { ns: 'auth' }));
+
+  // Call the refresh token service to get new tokens
+  const { accessToken, newRefreshToken } = await refreshTokenService(req, refreshToken);
+
+  // Set new authentication cookies
+  if (newRefreshToken) res.cookie('refreshToken', newRefreshToken, getRefreshTokenCookieOptions());
+  res.cookie('accessToken', accessToken, getAccessTokenCookieOptions());
+
+  sendHttpResponse(res, STATUS_CODES.OK, t('refresh_token.success', { ns: 'auth' }));
 });
 
 // Verify Email API Controller

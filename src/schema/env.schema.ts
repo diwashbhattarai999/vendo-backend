@@ -93,7 +93,7 @@ export const envSchema = z.object({
        * Token expiration time, must be a string in the format of "15m", "1h", "2d", etc.
        * The regex checks for a number followed by a single character (s, m, h, d).
        */
-      EXPIRES_IN: z.string({ required_error: 'EXPIRES_IN is required.' }).refine(
+      ACCESS_TOKEN_EXPIRES_IN: z.string({ required_error: 'EXPIRES_IN is required.' }).refine(
         (val) => {
           const regex = /^\d+[smhd]$/;
           return regex.test(val);
@@ -110,7 +110,7 @@ export const envSchema = z.object({
        * Token expiration time, must be a string in the format of "15m", "1h", "2d", etc.
        * The regex checks for a number followed by a single character (s, m, h, d).
        */
-      REFRESH_EXPIRES_IN: z.string({ required_error: 'REFRESH_EXPIRES_IN is required.' }).refine(
+      REFRESH_TOKEN_EXPIRES_IN: z.string({ required_error: 'REFRESH_EXPIRES_IN is required.' }).refine(
         (val) => {
           const regex = /^\d+[smhd]$/;
           return regex.test(val);

@@ -23,9 +23,9 @@ const parsedEnv = envSchema.safeParse({
   },
   jwt: {
     ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET,
-    EXPIRES_IN: process.env.EXPIRES_IN,
+    ACCESS_TOKEN_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
     REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET,
-    REFRESH_EXPIRES_IN: process.env.REFRESH_EXPIRES_IN,
+    REFRESH_TOKEN_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
   },
 });
 

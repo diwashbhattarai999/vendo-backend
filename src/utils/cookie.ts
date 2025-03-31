@@ -11,7 +11,7 @@ const defaults: CookieOptions = {
 };
 
 export const getAccessTokenCookieOptions = (): CookieOptions => {
-  const expiresIn = env.jwt.EXPIRES_IN;
+  const expiresIn = env.jwt.ACCESS_TOKEN_EXPIRES_IN;
   const expires = calculateExpirationDate(expiresIn);
   return {
     ...defaults,
@@ -23,7 +23,7 @@ export const getAccessTokenCookieOptions = (): CookieOptions => {
 export const REFRESH_PATH = `${env.app.BASE_URL}/auth/refresh`;
 
 export const getRefreshTokenCookieOptions = (): CookieOptions => {
-  const expiresIn = env.jwt.REFRESH_EXPIRES_IN;
+  const expiresIn = env.jwt.REFRESH_TOKEN_EXPIRES_IN;
   const expires = calculateExpirationDate(expiresIn);
   return {
     ...defaults,

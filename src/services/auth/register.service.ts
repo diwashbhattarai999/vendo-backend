@@ -1,4 +1,5 @@
 import type { User } from '@prisma/client';
+import type { Request } from 'express';
 
 import { env } from '@/config/env';
 
@@ -24,17 +25,20 @@ import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
  * This function checks if the user already exists in the database,
  * hashes the password, and creates a new user.
  *
- * @param {RegisterType['body']} payload - The registration data.
+ * @param {Request} req - The request object containing user registration data.
  * @returns {Promise<RegisterType['body']>} - The newly created user data without the password.
  */
-export const registerService = async (payload: RegisterType['body']): Promise<Omit<User, 'password'>> => {
-  const { email, password, firstName, lastName } = payload;
+export const registerService = async (req: Request<{}, {}, RegisterType['body']>): Promise<Omit<User, 'password'>> => {
+  const t = req.t;
+
+  const { email, password, firstName, lastName } = req.body;
 
   // Check if email already exists in the database
   const existingUser = await getUserByEmail(email);
 
   // If the user already exists, throw a custom error
-  if (existingUser) throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.AUTH_EMAIL_ALREADY_EXISTS, 'User with this email already exists');
+  if (existingUser)
+    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.AUTH_EMAIL_ALREADY_EXISTS, t('register.user_with_email_exists', { ns: 'auth' }));
 
   // Hash the password
   const hashedPassword = await hashValue(password);
