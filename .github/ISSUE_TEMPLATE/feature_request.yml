@@ -1,0 +1,30 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or improvement
+title: "[Feature] "
+labels: [ "enhancement" ]
+assignees: SampleAssignee
+body:
+- type: textarea
+  id: feature-description
+  attributes:
+    label: Feature Description
+    description: Provide a clear and concise description of the feature.
+    placeholder: "Explain what you want to achieve..."
+  validations:
+    required: true
+
+- type: textarea
+  id: use-case
+  attributes:
+    label: Use Case
+    description: Explain why this feature is needed.
+    placeholder: "Describe the problem it solves..."
+  validations:
+    required: true
+
+- type: textarea
+  id: alternatives
+  attributes:
+    label: Alternatives Considered
+    description: Have you considered other solutions?
+    placeholder: "List any alternatives..."

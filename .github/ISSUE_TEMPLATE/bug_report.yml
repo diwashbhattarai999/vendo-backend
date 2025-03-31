@@ -1,0 +1,45 @@
+name: 🐛 Bug Report
+description: Report a reproducible bug in Vendo Backend
+title: "[BUG] "
+labels: [ "bug" ]
+assignees: SampleAssignee
+body:
+- type: textarea
+  id: what-happened
+  attributes:
+    label: What happened?
+    description: Describe the issue and the expected behavior.
+    placeholder: "Describe the issue in detail..."
+  validations:
+    required: true
+
+- type: textarea
+  id: steps-to-reproduce
+  attributes:
+    label: Steps to Reproduce
+    description: Provide step-by-step instructions to reproduce the issue.
+    placeholder: |
+      1. Start the server
+      2. Make a request to X
+      3. See error...
+  validations:
+    required: true
+
+- type: textarea
+  id: logs
+  attributes:
+    label: Logs & Errors
+    description: "Paste relevant logs or stack traces."
+    render: shell
+
+- type: dropdown
+  id: environment
+  attributes:
+    label: Environment
+    description: What environment are you using?
+    options:
+    - "Local Development"
+    - "Production"
+    - "Staging"
+  validations:
+    required: true
