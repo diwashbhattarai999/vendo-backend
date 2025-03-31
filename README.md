@@ -1,6 +1,6 @@
 # Vendo Backend
 
-Backend for Vendo, a SaaS platform that provides an all-in-one solution for small retailers in Nepal. Built with Node.js, Express, TypeScript, Prisma, and PostgreSQL.
+Backend for Vendo, a SaaS platform. Built with Node.js, Express, TypeScript, Prisma, and PostgreSQL.
 
 ## 🚀 Features
 
