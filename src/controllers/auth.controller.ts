@@ -6,7 +6,7 @@ import { STATUS_CODES } from '@/constant/status.codes';
 import { asyncCatch } from '@/error/async.catch';
 import { CustomError } from '@/error/custom.api.error';
 
-import { getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from '@/utils/cookie';
+import { clearAuthenticationCookies, getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
 import { forgotPasswordService } from '@/services/auth/forgot.password.service';
@@ -15,6 +15,7 @@ import { refreshTokenService } from '@/services/auth/refresh.token.service';
 import { registerService } from '@/services/auth/register.service';
 import { resetPasswordService } from '@/services/auth/reset.password.service';
 import { verifyEmailService } from '@/services/auth/verify.email.service';
+import { deleteSessionById } from '@/services/session.service';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 import type { ForgotPasswordType, ResetPasswordType } from '@/schema/auth/password.schema';
@@ -26,7 +27,7 @@ import type { VerifyEmailType } from '@/schema/auth/verify.email.schema';
  * Handles user registration by validating the request body,
  * calling the register service, and sending a response.
  */
-export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterType['body']>, res, _next) => {
+export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterType['body']>, res) => {
   const t = req.t;
 
   // Call the register service to create a new user
@@ -41,7 +42,7 @@ export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterTy
  * Handles user login by validating the request body,
  * calling the login service, and sending a response.
  */
-export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['body']>, res, _next) => {
+export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['body']>, res) => {
   const t = req.t;
   const userAgent = req.headers['user-agent'];
 
@@ -60,7 +61,7 @@ export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['bo
  * Handles token refresh by extracting the refresh token from cookies,
  * calling the refresh token service, and sending a new access token.
  */
-export const refreshTokenHandler = asyncCatch(async (req, res, _next) => {
+export const refreshTokenHandler = asyncCatch(async (req, res) => {
   const t = req.t;
 
   // Extract the refresh token from the request cookies
@@ -86,7 +87,7 @@ export const refreshTokenHandler = asyncCatch(async (req, res, _next) => {
  * Handles email verification by validating the request body,
  * calling the verify email service, and sending a response.
  */
-export const verifyEmailHandler = asyncCatch(async (req: Request<{}, {}, VerifyEmailType['body']>, res, _next) => {
+export const verifyEmailHandler = asyncCatch(async (req: Request<{}, {}, VerifyEmailType['body']>, res) => {
   const t = req.t;
 
   // Call the verify email service to verify the user's email
@@ -101,7 +102,7 @@ export const verifyEmailHandler = asyncCatch(async (req: Request<{}, {}, VerifyE
  * Handles password reset requests by validating the request body,
  * calling the forgot password service, and sending a response.
  */
-export const forgotPasswordHandler = asyncCatch(async (req: Request<{}, {}, ForgotPasswordType['body']>, res, _next) => {
+export const forgotPasswordHandler = asyncCatch(async (req: Request<{}, {}, ForgotPasswordType['body']>, res) => {
   const t = req.t;
 
   // Call the forgot password service to send a password reset email
@@ -116,7 +117,7 @@ export const forgotPasswordHandler = asyncCatch(async (req: Request<{}, {}, Forg
  * Handles password reset by validating the request body,
  * calling the reset password service, and sending a response.
  */
-export const resetPasswordHandler = asyncCatch(async (req: Request<{}, {}, ResetPasswordType['body']>, res, _next) => {
+export const resetPasswordHandler = asyncCatch(async (req: Request<{}, {}, ResetPasswordType['body']>, res) => {
   const t = req.t;
 
   // Call the reset password service to reset the user's password
@@ -127,16 +128,29 @@ export const resetPasswordHandler = asyncCatch(async (req: Request<{}, {}, Reset
 });
 
 // Logout API Controller
-export const logoutHandler = asyncCatch(async (_req, res, _next) => {
-  res.send('Logout API Route');
+export const logoutHandler = asyncCatch(async (req: Request, res) => {
+  const t = req.t;
+
+  // Extract the session ID from the request
+  const sessionId = req.sessionId;
+  if (!sessionId) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_SESSION_NOT_FOUND, t('session.not_found', { ns: 'auth' }));
+
+  // Call the logout service to delete the session
+  await deleteSessionById(sessionId);
+
+  // Clear the authentication cookies
+  clearAuthenticationCookies(res);
+
+  // Send a success response indicating that the user has logged out
+  sendHttpResponse(res, STATUS_CODES.OK, t('logout.success', { ns: 'auth' }));
 });
 
 // Sessions API Controller
-export const sessionsHandler = asyncCatch(async (_req, res, _next) => {
+export const sessionsHandler = asyncCatch(async (_req, res) => {
   res.send('Sessions API Route');
 });
 
 // 2FA API Controller
-export const twoFactorAuthHandler = asyncCatch(async (_req, res, _next) => {
+export const twoFactorAuthHandler = asyncCatch(async (_req, res) => {
   res.send('2FA API Route');
 });

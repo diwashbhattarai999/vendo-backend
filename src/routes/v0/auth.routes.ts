@@ -19,6 +19,8 @@ import { forgotPasswordSchema, resetPasswordSchema } from '@/schema/auth/passwor
 import { registerSchema } from '@/schema/auth/register.schema';
 import { verifyEmailSchema } from '@/schema/auth/verify.email.schema';
 
+import { authenticateJWT } from '@/strategies/jwt.strategy';
+
 const authRouter = Router();
 
 authRouter.post('/register', validateSchema(registerSchema), registerHandler);
@@ -31,7 +33,7 @@ authRouter.post('/verify/email', validateSchema(verifyEmailSchema), verifyEmailH
 authRouter.post('/password/forgot', validateSchema(forgotPasswordSchema), forgotPasswordHandler);
 authRouter.post('/password/reset', validateSchema(resetPasswordSchema), resetPasswordHandler);
 
-authRouter.post('/logout', logoutHandler);
+authRouter.post('/logout', authenticateJWT, logoutHandler);
 
 authRouter.get('/sessions', sessionsHandler);
 

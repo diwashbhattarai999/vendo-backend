@@ -69,7 +69,7 @@ export const getHealthHandler = asyncCatch(async (req: Request, res: Response) =
  */
 export const metricsHandler = asyncCatch(async (req: Request<{}, {}, {}, MetricsType['query']>, res: Response) => {
   const t = req.t;
-  const { loop } = req.query;
+  const { loop } = req.query as MetricsType['query'];
   const loopNumber = Number(loop);
   let loopCount = 0;
 

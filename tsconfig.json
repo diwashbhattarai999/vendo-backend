@@ -11,7 +11,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-     },
+    },
 
     /* Strictness */
     "strict": true,
@@ -31,8 +31,9 @@
     "outDir": "dist",
     "sourceMap": true,
 
-    "lib": ["es2023"]
+    "lib": ["es2023"],
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts", "src/types/**/*.d.ts", "public/**/*"],
-  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "src/types/"],
+  "exclude": ["node_modules"]
 }
