@@ -1,5 +1,5 @@
 import type { User } from '@prisma/client';
-import type { Request } from 'express';
+import type { TFunction } from 'i18next';
 
 import { env } from '@/config/env';
 
@@ -28,10 +28,8 @@ import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
  * @param {Request} req - The request object containing user registration data.
  * @returns {Promise<RegisterType['body']>} - The newly created user data without the password.
  */
-export const registerService = async (req: Request<{}, {}, RegisterType['body']>): Promise<Omit<User, 'password'>> => {
-  const t = req.t;
-
-  const { email, password, firstName, lastName } = req.body;
+export const registerService = async (t: TFunction, payload: RegisterType['body']): Promise<Omit<User, 'password'>> => {
+  const { email, password, firstName, lastName } = payload;
 
   // Check if email already exists in the database
   const existingUser = await getUserByEmail(email);

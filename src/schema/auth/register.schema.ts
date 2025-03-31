@@ -16,10 +16,15 @@ export const registerSchema = z.object({
       firstName: z.string({ required_error: 'First name is required' }).min(1, { message: 'First name is too short' }),
       lastName: z.string({ required_error: 'Last name is required' }).min(1, { message: 'Last name is too short' }),
     })
+    .strict()
     .refine((data) => data.password === data.confirmPassword, {
       message: 'Passwords do not match',
       path: ['confirmPassword'],
     }),
 });
 
+/**
+ * Type for user registration data.
+ * This type is derived from the registerSchema and represents the expected structure of the data.
+ */
 export type RegisterType = z.infer<typeof registerSchema>;
