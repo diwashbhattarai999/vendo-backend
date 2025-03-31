@@ -2,6 +2,14 @@
 
 Backend for Vendo, a SaaS platform. Built with Node.js, Express, TypeScript, Prisma, and PostgreSQL.
 
+<br />
+
+>
+> ### 🚧 Work in Progress
+>
+
+<br />
+
 ## 🚀 Features
 
 - **User Authentication**: Secure JWT-based authentication.
