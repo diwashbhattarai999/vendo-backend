@@ -1,13 +1,14 @@
 {
   "general_error_message": "An unexpected error occurred.",
-  "too_many_requests_message": "Too many requests. Please slow down.",
+  "too_many_requests": "Too many requests. Please try again.",
   "invalidJsonConfig": "Invalid JSON configuration.",
   "route_not_found_message": "Endpoint not found.",
   "throttling_message": "Request rate limited. Your requests are temporarily delayed.",
   "unauthorized": "Access denied. You do not have permission to access this resource.",
   "api_key_not_found_message": "API key missing.",
   "api_key_not_matched_message": "Invalid API key.",
-  "email_not_sent_message": "Email delivery failed.",
   "schema_validation_error": "Data validation failed. Please check your input and try again.",
-  "invalid_request_body": "Invalid JSON request body. Please check your request body and try again."
+  "invalid_request_body": "Invalid JSON request body. Please check your request body and try again.",
+
+  "email_send_failed": "Failed to send email."
 }

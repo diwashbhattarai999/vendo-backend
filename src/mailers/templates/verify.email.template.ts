@@ -49,7 +49,6 @@ export const verifyEmailTemplate = ({ url, name, brandColor = '#2563eb' }: Verif
           .content {
             text-align: center;
             padding: 20px;
-            background-color:#f8f8f8;
           }
           .content h2 {
             font-size: 22px;

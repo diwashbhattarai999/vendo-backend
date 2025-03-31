@@ -15,7 +15,7 @@ import { fortyFiveMinutesFromNow } from '@/utils/date.time';
 import type { RegisterType } from '@/schema/auth/register.schema';
 
 import { createUser, getUserByEmail } from '../user.service';
-import { generateVerificationToken } from '../verification.service';
+import { generateVerificationTokenForEmail } from '../verification.service';
 
 import { sendEmail } from '@/mailers/mailer';
 import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
@@ -45,7 +45,7 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
   const newUser = await createUser({ email, password: hashedPassword, firstName, lastName });
 
   // Create a verification code for the new user
-  const verification = await generateVerificationToken({
+  const verification = await generateVerificationTokenForEmail({
     userId: newUser.id,
     expiresAt: fortyFiveMinutesFromNow(),
     type: VERIFICATION_TYPES.EMAIL_VERIFICATION,
@@ -54,6 +54,7 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
   // Send a verification email to the user
   const verificationUrl = `${env.app.CLIENT_URL}/confirm-account?token=${verification.token}`;
   await sendEmail({
+    t,
     to: newUser.email,
     from: `Vendo <onboarding@${env.resend.RESEND_DOMAIN}>`,
     ...verifyEmailTemplate({

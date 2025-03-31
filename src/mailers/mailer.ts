@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { CreateEmailResponseSuccess } from 'resend';
 
 import { env } from '@/config/env';
@@ -15,9 +16,10 @@ interface SendEmailParams {
   text: string;
   html: string;
   from?: string;
+  t: TFunction;
 }
 
-const FROM_EMAIL = `support@${env.resend.RESEND_DOMAIN}`;
+const FROM_EMAIL = `Vendo <support@${env.resend.RESEND_DOMAIN}>`;
 
 /**
  * Function to send an email using Resend API.
@@ -29,7 +31,7 @@ const FROM_EMAIL = `support@${env.resend.RESEND_DOMAIN}`;
  * @param {string} [params.from] - The sender email address (optional, defaults to FROM_EMAIL).
  * @returns {Promise<CreateEmailResponseSuccess | null>} - The response from the Resend API or null if an error occurs.
  */
-export const sendEmail = async ({ to, from = FROM_EMAIL, subject, text, html }: SendEmailParams): Promise<CreateEmailResponseSuccess | null> => {
+export const sendEmail = async ({ to, from = FROM_EMAIL, subject, text, html, t }: SendEmailParams): Promise<CreateEmailResponseSuccess | null> => {
   const { data, error } = await resend.emails.send({
     from,
     to: Array.isArray(to) ? to : [to],
@@ -38,7 +40,8 @@ export const sendEmail = async ({ to, from = FROM_EMAIL, subject, text, html }: 
     html,
   });
 
-  if (error) throw new CustomError(STATUS_CODES.INTERNAL_SERVER_ERROR, ERROR_CODES.EMAIL_SENDING_FAILED, 'Failed to send email');
+  if (error || !data?.id)
+    throw new CustomError(STATUS_CODES.INTERNAL_SERVER_ERROR, ERROR_CODES.EMAIL_SENDING_FAILED, t('email_send_failed', { ns: 'error' }));
 
   return data;
 };

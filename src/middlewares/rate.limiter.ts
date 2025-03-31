@@ -20,8 +20,8 @@ import { CustomError } from '@/error/custom.api.error';
  * @documentation https://express-rate-limit.mintlify.app/reference/stores
  */
 
-const WINDOW_IN_MILI_SECONDS = 15 * 60 * 1000;
-const MAX_REQUESTS_PER_WINDOW = 100;
+const WINDOW_IN_MILI_SECONDS = 15 * 60 * 1000; // 15 minutes
+const MAX_REQUESTS_PER_WINDOW = 100; // 100 requests per window (15 minutes)
 
 export const rateLimiter = rateLimit({
   windowMs: WINDOW_IN_MILI_SECONDS,
@@ -43,10 +43,10 @@ export const rateLimiter = rateLimit({
   },
 
   message: (req: Request, _res: Response) => ({
-    error: req.t('too_many_requests_message', { ns: 'error' }),
+    error: req.t('too_many_requests', { ns: 'error' }),
   }),
 
   handler: (req: Request, _res: Response) => {
-    throw new CustomError(STATUS_CODES.TOO_MANY_REQUESTS, ERROR_CODES.TOO_MANY_REQUESTS, req.t('too_many_requests_message', { ns: 'error' }));
+    throw new CustomError(STATUS_CODES.TOO_MANY_REQUESTS, ERROR_CODES.TOO_MANY_REQUESTS, req.t('too_many_requests', { ns: 'error' }));
   },
 });

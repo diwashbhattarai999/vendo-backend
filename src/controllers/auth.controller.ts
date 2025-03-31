@@ -9,6 +9,7 @@ import { CustomError } from '@/error/custom.api.error';
 import { getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
+import { forgotPasswordService } from '@/services/auth/forgot.password.service';
 import { loginService } from '@/services/auth/login.service';
 import { refreshTokenService } from '@/services/auth/refresh.token.service';
 import { registerService } from '@/services/auth/register.service';
@@ -93,8 +94,14 @@ export const verifyEmailHandler: RequestHandler = asyncCatch(async (req, res, _n
 });
 
 // Forgot Password API Controller
-export const forgotPasswordHandler: RequestHandler = asyncCatch(async (_req, res, _next) => {
-  res.send('Forgot Password API Route');
+export const forgotPasswordHandler: RequestHandler = asyncCatch(async (req, res, _next) => {
+  const t = req.t;
+
+  // Call the forgot password service to send a password reset email
+  const forgotPasswordResposne = await forgotPasswordService(t, req.body.email);
+
+  // Send a success response indicating that the password reset email was sent
+  sendHttpResponse(res, STATUS_CODES.OK, t('forgot_password.success', { ns: 'auth' }), forgotPasswordResposne);
 });
 
 // Reset Password API Controller
