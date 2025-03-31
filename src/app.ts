@@ -14,6 +14,7 @@ import { env } from '@/config/env';
 import { globalErrorHandler } from '@/error/global.error.handler';
 
 import { i18nextMiddleware } from '@/middlewares/i18next';
+import { passport } from '@/middlewares/passport';
 import { rateLimiter } from '@/middlewares/rate.limiter';
 import { routeNotFoundHandler } from '@/middlewares/route.not.found';
 
@@ -59,6 +60,12 @@ app.use(
   }),
 );
 app.use(rateLimiter); // Limits request rate to prevent abuse
+
+/**
+ * AUTHENTICATION MIDDLEWARE
+ * Initializes Passport for authentication.
+ */
+app.use(passport.initialize());
 
 /**
  * PARSING MIDDLEWARE
