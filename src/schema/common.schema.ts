@@ -25,11 +25,13 @@ export const passwordSchema = z
   .regex(/[0-9]/, { message: 'Password must contain at least one number' })
   .regex(/[@$!%*?&]/, { message: 'Password must contain at least one special character' });
 
+export const confirmPasswordSchema = z.string({ required_error: 'Confirm password is required' }).trim();
+
 /**
- * Schema for validating verification codes.
+ * Schema for validating verification token.
  */
-export const verificationCodeSchema = z
-  .string({ required_error: 'Verification code is required' })
+export const verificationTokenSchema = z
+  .string({ required_error: 'Verification token is required' })
   .trim()
-  .min(1, { message: 'Verification code cannot be empty' })
-  .max(32, { message: 'Verification code must be at most 32 characters long' });
+  .min(1, { message: 'Verification token cannot be empty' })
+  .max(32, { message: 'Verification token must be at most 32 characters long' });

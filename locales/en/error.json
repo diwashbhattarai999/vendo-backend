@@ -10,5 +10,6 @@
   "schema_validation_error": "Data validation failed. Please check your input and try again.",
   "invalid_request_body": "Invalid JSON request body. Please check your request body and try again.",
 
-  "email_send_failed": "Failed to send email."
+  "email_send_failed": "Failed to send email.",
+  "user_not_found": "User not found with this email."
 }

@@ -9,6 +9,8 @@ import prisma from '@/database/prisma-client';
  */
 export const getUserByEmail = async (email: string): Promise<User | null> => await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
 
+export const getUserById = async (userId: string): Promise<User | null> => await prisma.user.findUnique({ where: { id: userId } });
+
 /**
  * Function to create a new user.
  * @param {Object} userData - The data of the user to create.

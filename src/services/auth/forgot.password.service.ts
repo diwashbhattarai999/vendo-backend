@@ -19,7 +19,7 @@ import { passwordResetTemplate } from '@/mailers/templates/password.reset.templa
 export const forgotPasswordService = async (t: TFunction, email: string) => {
   // Check if the user exists, if not, throw an error
   const user = await getUserByEmail(email);
-  if (!user) throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.USER_NOT_FOUND, t('forgot_password.user_not_found', { ns: 'auth' }));
+  if (!user) throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.USER_NOT_FOUND, t('user_not_found', { ns: 'error' }));
 
   const timeAgo = threeMinutesAgo(); // 3 minutes ago
   const maxAttempts = 2; // No. of emails allowed to be sent
@@ -34,15 +34,11 @@ export const forgotPasswordService = async (t: TFunction, email: string) => {
 
   // Generate a new password reset token, valid for 1 hour
   const expiresAt = anHourFromNow();
-  const validCode = await generateVerificationToken({ userId: user.id, type: VERIFICATION_TYPES.PASSWORD_RESET, expiresAt });
+  const validToken = await generateVerificationToken({ userId: user.id, type: VERIFICATION_TYPES.PASSWORD_RESET, expiresAt });
 
   // Send the password reset email to the user, including the reset link with the token and expiration time
-  const resetLink = `${env.app.CLIENT_URL}/reset-password?token=${validCode.token}&exp=${expiresAt.getTime()}`;
-  const emailResponse = await sendEmail({
-    t,
-    to: user.email,
-    ...passwordResetTemplate(resetLink),
-  });
+  const resetLink = `${env.app.CLIENT_URL}/reset-password?token=${validToken.token}&exp=${expiresAt.getTime()}`;
+  const emailResponse = await sendEmail({ t, to: user.email, ...passwordResetTemplate(resetLink) });
 
   // Return the email response
   return { url: resetLink, id: emailResponse?.id };
