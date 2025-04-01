@@ -4,9 +4,7 @@ Backend for Vendo, a SaaS platform. Built with Node.js, Express, TypeScript, Pri
 
 <br />
 
->
 > ### 🚧 Work in Progress
->
 
 <br />
 
@@ -89,6 +87,12 @@ Stop the containers:
 ```sh
 pnpm docker:compose:stop
 ```
+
+## 📄 API Documentation
+
+The API documentation is available on Postman. You can view it here:
+
+[Postman API Documentation](https://www.postman.com/diwashbhattarai999/workspace/vendo-backend/overview)
 
 ## 📜 License
 
