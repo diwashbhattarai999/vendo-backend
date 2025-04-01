@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, development, staging, test ]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   quality-checks:
     name: Quality Checks
