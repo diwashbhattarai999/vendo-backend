@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { authRouter } from './auth.routes';
+import { sessionRouter } from './sessions.routes';
 
 /**
  * Main router for version 0 of the API.
@@ -13,7 +14,6 @@ import { authRouter } from './auth.routes';
 const router = Router();
 
 router.use('/auth', authRouter);
-
-// More routers can be added here for other versioned API endpoints
+router.use('/sessions', sessionRouter);
 
 export { router };
