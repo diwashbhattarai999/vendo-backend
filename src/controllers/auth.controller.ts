@@ -127,7 +127,11 @@ export const resetPasswordHandler = asyncCatch(async (req: Request<{}, {}, Reset
   sendHttpResponse(res, STATUS_CODES.OK, t('reset_password.success', { ns: 'auth' }), { user });
 });
 
-// Logout API Controller
+/**
+ * Logout API Controller
+ * Handles user logout by extracting the session ID from the request,
+ * calling the logout service, and sending a response.
+ */
 export const logoutHandler = asyncCatch(async (req: Request, res) => {
   const t = req.t;
 
@@ -143,11 +147,6 @@ export const logoutHandler = asyncCatch(async (req: Request, res) => {
 
   // Send a success response indicating that the user has logged out
   sendHttpResponse(res, STATUS_CODES.OK, t('logout.success', { ns: 'auth' }));
-});
-
-// Sessions API Controller
-export const sessionsHandler = asyncCatch(async (_req, res) => {
-  res.send('Sessions API Route');
 });
 
 // 2FA API Controller

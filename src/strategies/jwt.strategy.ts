@@ -9,6 +9,8 @@ import { STATUS_CODES } from '@/constant/status.codes';
 
 import { CustomError } from '@/error/custom.api.error';
 
+import { sanitizeUser } from '@/utils/sanitize.data';
+
 import { getUserById } from '@/services/user.service';
 
 interface JwtPayload {
@@ -48,11 +50,8 @@ export const setupJWTStrategy = (passport: PassportStatic) => {
         const user = await getUserById(payload.userId);
         if (!user) return done(null, false);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We are intentionally removing the password from the user object
-        const { password, ...currentUser } = user;
-
         req.sessionId = payload.sessionId;
-        return done(null, currentUser);
+        return done(null, sanitizeUser(user));
       } catch (error) {
         return done(error, false);
       }

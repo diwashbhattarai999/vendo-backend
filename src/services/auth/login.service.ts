@@ -8,6 +8,7 @@ import { CustomError } from '@/error/custom.api.error';
 import { compareValue } from '@/utils/bcrypt';
 import { thirtyDaysFromNow } from '@/utils/date.time';
 import { refreshTokenSignOptions, signJwtToken } from '@/utils/jwt';
+import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 
@@ -46,12 +47,9 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   // Create a refresh token for the user
   const refreshToken = signJwtToken({ sessionId: session.id }, refreshTokenSignOptions);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We need to remove the password from the response
-  const { password: _, ...userWithoutPassword } = user;
-
   // Return the access token and refresh token
   return {
-    user: userWithoutPassword,
+    user: sanitizeUser(user),
     accessToken,
     refreshToken,
     mfaRequired: false,
