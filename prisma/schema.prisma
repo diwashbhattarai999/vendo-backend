@@ -23,10 +23,9 @@ model User {
   isEmailVerified   Boolean             @default(false)
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  Session           Session[]
-  VerificationToken VerificationToken[]
-  userPreferences   UserPreferences?    @relation(fields: [userPreferencesId], references: [id])
-  userPreferencesId String?             @unique
+  session           Session[]
+  verificationToken VerificationToken[]
+  userPreferences   UserPreferences?
 }
 
 model UserPreferences {
@@ -34,8 +33,8 @@ model UserPreferences {
   enable2FA         Boolean @default(false)
   emailNotification Boolean @default(true)
   twoFactorSecret   String?
-  User              User[]
   userId            String  @unique
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Session {

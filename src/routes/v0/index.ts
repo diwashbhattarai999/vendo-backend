@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { authRouter } from './auth.routes';
+import { mfaRouter } from './mfa.routes';
 import { sessionRouter } from './sessions.routes';
 
 /**
@@ -15,5 +16,6 @@ const router = Router();
 
 router.use('/auth', authRouter);
 router.use('/sessions', sessionRouter);
+router.use('/mfa', mfaRouter);
 
 export { router };

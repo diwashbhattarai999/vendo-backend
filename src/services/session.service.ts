@@ -1,3 +1,5 @@
+import { thirtyDaysFromNow } from '@/utils/date.time';
+
 import prisma from '@/database/prisma-client';
 
 export const deleteSessionByUserId = async (userId: string) => await prisma.session.deleteMany({ where: { userId } });
@@ -28,11 +30,20 @@ export const getSessionById = async (sessionId: string) => {
           isEmailVerified: true,
           createdAt: true,
           updatedAt: true,
-          userPreferencesId: true,
         },
       },
     },
   });
 
   return session?.user;
+};
+
+export const createSession = async (userId: string, userAgent?: string, expiresAt?: Date) => {
+  return await prisma.session.create({
+    data: {
+      userId: userId,
+      userAgent,
+      expiresAt: expiresAt || thirtyDaysFromNow(),
+    },
+  });
 };
