@@ -92,7 +92,8 @@ pnpm docker:compose:stop
 
 The API documentation is available on Postman. You can view it here:
 
-[Postman API Documentation](https://www.postman.com/diwashbhattarai999/workspace/vendo-backend/overview)
+[Postman API Documentation](https://documenter.getpostman.com/view/43388572/2sB2cRDjX4)
+
 
 ## 📜 License
 
