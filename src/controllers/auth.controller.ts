@@ -49,6 +49,12 @@ export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['bo
   // Call the login service to authenticate the user
   const { user, accessToken, refreshToken, mfaRequired } = await loginService(t, { ...req.body, userAgent });
 
+  // If MFA is required, send a response indicating that MFA is required
+  if (mfaRequired) {
+    sendHttpResponse(res, STATUS_CODES.OK, t('mfa.required', { ns: 'auth' }), { mfaRequired });
+    return;
+  }
+
   // Set authentication cookies
   setAuthenticationCookies({ res, accessToken, refreshToken });
 
@@ -147,9 +153,4 @@ export const logoutHandler = asyncCatch(async (req: Request, res) => {
 
   // Send a success response indicating that the user has logged out
   sendHttpResponse(res, STATUS_CODES.OK, t('logout.success', { ns: 'auth' }));
-});
-
-// 2FA API Controller
-export const twoFactorAuthHandler = asyncCatch(async (_req, res) => {
-  res.send('2FA API Route');
 });

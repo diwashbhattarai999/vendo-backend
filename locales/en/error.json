@@ -11,5 +11,9 @@
   "invalid_request_body": "Invalid JSON request body. Please check your request body and try again.",
 
   "email_send_failed": "Failed to send email.",
-  "user_not_found": "User not found with this email."
+  "user_not_found": "User not found with this email.",
+
+  "mfa": {
+    "already_enabled": "MFA is already enabled."
+  }
 }

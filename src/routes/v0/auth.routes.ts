@@ -7,7 +7,6 @@ import {
   refreshTokenHandler,
   registerHandler,
   resetPasswordHandler,
-  twoFactorAuthHandler,
   verifyEmailHandler,
 } from '@/controllers/auth.controller';
 
@@ -33,7 +32,5 @@ authRouter.post('/password/forgot', validateSchema(forgotPasswordSchema), forgot
 authRouter.post('/password/reset', validateSchema(resetPasswordSchema), resetPasswordHandler);
 
 authRouter.post('/logout', authenticateJWT, logoutHandler);
-
-authRouter.post('/2fa', twoFactorAuthHandler);
 
 export { authRouter };

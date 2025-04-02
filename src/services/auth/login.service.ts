@@ -6,48 +6,61 @@ import { STATUS_CODES } from '@/constant/status.codes';
 import { CustomError } from '@/error/custom.api.error';
 
 import { compareValue } from '@/utils/bcrypt';
-import { thirtyDaysFromNow } from '@/utils/date.time';
 import { refreshTokenSignOptions, signJwtToken } from '@/utils/jwt';
 import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 
+import { createSession } from '../session.service';
 import { getUserByEmail } from '../user.service';
 
-import prisma from '@/database/prisma-client';
+import { logger } from '@/logger/winston.logger';
 
 type LoginServicePayload = LoginType['body'] & { userAgent?: string };
 
+/**
+ * Login service function
+ * Handles user login by validating the credentials,
+ * creating a session, and generating access and refresh tokens.
+ */
 export const loginService = async (t: TFunction, payload: LoginServicePayload) => {
   const { email, password, userAgent } = payload;
 
+  logger.info(`Login attempt for email: ${email}`);
+
   // Check if the user exists, if not, throw an error
   const user = await getUserByEmail(email);
-  if (!user) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_CREDENTIALS, t('login.invalid_credentials', { ns: 'auth' }));
+  if (!user) {
+    logger.warn(`Failed login attempt: User not found for email: ${email}`);
+    throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_CREDENTIALS, t('login.invalid_credentials', { ns: 'auth' }));
+  }
 
   // Check if the password is correct, if not, throw an error
   const isPasswordValid = await compareValue(password, user.password);
-  if (!isPasswordValid)
+  if (!isPasswordValid) {
+    logger.warn(`Failed login attempt: Invalid password for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_CREDENTIALS, t('login.invalid_credentials', { ns: 'auth' }));
+  }
 
-  // TODO: Check if user has enabled 2FA
-
+  // Check if the user enable 2fa retuen user= null
+  if (user.userPreferences?.enable2FA) {
+    logger.info(`2FA required for user ID: ${user.id}`);
+    return {
+      user: null,
+      mfaRequired: true,
+      accessToken: '',
+      refreshToken: '',
+    };
+  }
   // Create a session for the user
-  const session = await prisma.session.create({
-    data: {
-      userId: user.id,
-      userAgent,
-      expiresAt: thirtyDaysFromNow(),
-    },
-  });
+  const session = await createSession(user.id, userAgent);
+  logger.info(`Session created for user ID: ${user.id}`);
 
-  // Create a access token for the user
+  // Generate access and refresh tokens
   const accessToken = signJwtToken({ userId: user.id, sessionId: session.id });
-
-  // Create a refresh token for the user
   const refreshToken = signJwtToken({ sessionId: session.id }, refreshTokenSignOptions);
 
-  // Return the access token and refresh token
+  logger.info(`Login successful for user ID: ${user.id}`);
   return {
     user: sanitizeUser(user),
     accessToken,
