@@ -10,12 +10,14 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { hashValue } from '@/utils/bcrypt';
 import { fortyFiveMinutesFromNow } from '@/utils/date.time';
+import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { RegisterType } from '@/schema/auth/register.schema';
 
 import { createUser, getUserByEmail } from '../user.service';
 import { generateVerificationTokenForEmail } from '../verification.service';
 
+import { logger } from '@/logger/winston.logger';
 import { sendEmail } from '@/mailers/mailer';
 import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
 
@@ -28,6 +30,8 @@ import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
 export const registerService = async (t: TFunction, payload: RegisterType['body']) => {
   const { email, password, firstName, lastName } = payload;
 
+  logger.debug(`Attempting registration for email: ${email}`);
+
   // Check if email already exists in the database
   const existingUser = await getUserByEmail(email);
 
@@ -37,9 +41,11 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
 
   // Hash the password
   const hashedPassword = await hashValue(password);
+  logger.debug(`Password hashed for email: ${email}`);
 
   // Create a new user in the database
   const newUser = await createUser({ email, password: hashedPassword, firstName, lastName });
+  logger.info(`New user created. ID: ${newUser.id}, Email: ${email}`);
 
   // Create a verification token for the new user
   const verification = await generateVerificationTokenForEmail({
@@ -47,6 +53,7 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
     expiresAt: fortyFiveMinutesFromNow(),
     type: VERIFICATION_TYPES.EMAIL_VERIFICATION,
   });
+  logger.debug(`Verification token generated for user ID: ${newUser.id}`);
 
   // Send a verification email to the user
   const verificationUrl = `${env.app.CLIENT_URL}/confirm-account?token=${verification.token}`;
@@ -59,9 +66,8 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
       url: verificationUrl,
     }),
   });
+  logger.info(`Verification email sent to user ID: ${newUser.id}`);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We need to remove the password from the response
-  const { password: _, ...sanitizedUser } = newUser;
-
-  return sanitizedUser;
+  // Return the sanitized user data
+  return sanitizeUser(newUser);
 };

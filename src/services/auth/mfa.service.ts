@@ -9,28 +9,36 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { refreshTokenSignOptions, signJwtToken } from '@/utils/jwt';
 
-import { createSession } from './session.service';
-import { updateUserPreferences } from './user.preferences.service';
-import { getUserByEmail } from './user.service';
+import { createSession } from '../session.service';
+import { updateUserPreferences } from '../user.preferences.service';
+import { getUserByEmail } from '../user.service';
+
+import { logger } from '@/logger/winston.logger';
 
 /**
- * Generates a new MFA secret key and QR code for the user.
- * If the user already has a secret key, it generates a new QR code using the existing key.
- * The QR code can be scanned by an authenticator app to set up MFA.
+ * Service to generate the MFA secret and corresponding QR code.
+ * It checks if MFA is already enabled, generates a secret key if not,
+ * and returns the QR code URL for user setup.
  */
 export const generateMFASecret = async (user: Express.User, t: TFunction) => {
+  logger.debug(`Attempting to generate MFA secret for user ID: ${user.id}`);
+
   // Check if MFA is already enabled
-  if (user.userPreferences?.enable2FA)
+  if (user.userPreferences?.enable2FA) {
+    logger.warn(`MFA already enabled for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'error' }));
+  }
 
   // Generate a new secret key if one doesn't exist
   let secretKey = user.userPreferences?.twoFactorSecret;
   if (!secretKey) {
+    logger.info(`Generating new MFA secret for user ID: ${user.id}`);
     const secret = speakeasy.generateSecret({ name: 'Vendo' });
     secretKey = secret.base32;
 
     // Save the secret key to the user's preferences
     await updateUserPreferences(user.id, { twoFactorSecret: secretKey });
+    logger.info(`New MFA secret generated and saved for user ID: ${user.id}`);
   }
 
   // Generate the otpauth URL for the QR code
@@ -43,17 +51,22 @@ export const generateMFASecret = async (user: Express.User, t: TFunction) => {
 
   // Generate the QR code image URL
   const qrImageUrl = await qrcode.toDataURL(url);
+  logger.info(`QR code generated for user ID: ${user.id}`);
 
   return { secret: secretKey, qrImageUrl };
 };
 
 /**
- * Verifies the MFA setup by checking the OTP code provided by the user.
- * If the OTP code is valid, it updates the user's preferences to enable MFA.
+ * Service to verify MFA setup by checking the OTP code and enabling MFA for the user.
+ * It validates the OTP and updates the user's preferences to enable 2FA.
  */
 export const verifyMFASetup = async (otpCode: string, secretKey: string, t: TFunction, user: Express.User) => {
-  if (user.userPreferences?.enable2FA)
+  logger.debug(`Verifying MFA setup for user ID: ${user.id}`);
+
+  if (user.userPreferences?.enable2FA) {
+    logger.warn(`MFA already enabled for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'error' }));
+  }
 
   // Verify the OTP code using the secret key
   const verified = speakeasy.totp.verify({
@@ -63,39 +76,56 @@ export const verifyMFASetup = async (otpCode: string, secretKey: string, t: TFun
   });
 
   // If the OTP code is not valid, throw an error
-  if (!verified) throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_INVALID_CODE, t('mfa.invalid_code', { ns: 'auth' }));
+  if (!verified) {
+    logger.warn(`Invalid MFA code attempt for user ID: ${user.id}`);
+    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_INVALID_CODE, t('mfa.invalid_code', { ns: 'auth' }));
+  }
 
   // Update the user's preferences to enable MFA
   const updatedUserPreferences = await updateUserPreferences(user.id, { enable2FA: true });
+  logger.info(`MFA setup successfully completed for user ID: ${user.id}`);
 
   return { userPreferences: { enable2FA: updatedUserPreferences.enable2FA } };
 };
 
 /**
- * Revokes MFA for the user by removing the secret key and disabling MFA.
+ * Service to revoke MFA for a user by disabling 2FA and removing the secret key.
  */
 export const revokeMFA = async (user: Express.User, t: TFunction) => {
-  if (!user.userPreferences?.enable2FA)
+  logger.debug(`Revoking MFA for user ID: ${user.id}`);
+
+  if (!user.userPreferences?.enable2FA) {
+    logger.warn(`MFA not enabled for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_NOT_ENABLED, t('mfa.not_enabled', { ns: 'auth' }));
+  }
 
   // Disable MFA and remove the secret key
   const updatedUserPreferences = await updateUserPreferences(user.id, { enable2FA: false, twoFactorSecret: null });
+  logger.info(`MFA successfully revoked for user ID: ${user.id}`);
 
   return { userPreferences: { enable2FA: updatedUserPreferences.enable2FA } };
 };
 
 /**
- * Verifies the MFA code during login.
- * If the OTP code is valid, it creates a session for the user and generates access and refresh tokens.
+ * Service to verify MFA during the login process.
+ * It checks if MFA is enabled, verifies the OTP code,
+ * and generates session tokens upon successful verification.
  */
 export const verifyMFAForLogin = async (otpCode: string, email: string, t: TFunction, userAgent?: string) => {
+  logger.debug(`MFA verification attempt for email: ${email}, userAgent: ${userAgent || 'N/A'}`);
+
   // Fetch the user by email
   const user = await getUserByEmail(email);
-  if (!user) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('unauthorized', { ns: 'error' }));
+  if (!user) {
+    logger.warn(`Login attempt failed: User not found for email: ${email}`);
+    throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('unauthorized', { ns: 'error' }));
+  }
 
   // Check if MFA is enabled for the user
-  if (!user.userPreferences?.enable2FA || !user.userPreferences.twoFactorSecret)
+  if (!user.userPreferences?.enable2FA || !user.userPreferences.twoFactorSecret) {
+    logger.warn(`Login attempt failed: MFA not enabled for user email: ${email}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_NOT_ENABLED, t('mfa.not_enabled', { ns: 'auth' }));
+  }
 
   // Verify the OTP code using the secret key
   const verified = speakeasy.totp.verify({
@@ -105,12 +135,19 @@ export const verifyMFAForLogin = async (otpCode: string, email: string, t: TFunc
   });
 
   // If the OTP code is not valid, throw an error
-  if (!verified) throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_INVALID_CODE, t('mfa.invalid_code', { ns: 'auth' }));
+  if (!verified) {
+    logger.warn(`Invalid MFA code provided for email: ${email}`);
+    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_INVALID_CODE, t('mfa.invalid_code', { ns: 'auth' }));
+  }
+
+  logger.info(`MFA successfully verified for email: ${email}`);
 
   // Create a session for the user, and generate access and refresh tokens
   const session = await createSession(user.id, userAgent);
   const accessToken = signJwtToken({ userId: user.id, sessionId: session.id });
   const refreshToken = signJwtToken({ sessionId: session.id }, refreshTokenSignOptions);
+
+  logger.info(`Session created for user ID: ${user.id}, accessToken: ${accessToken}`);
 
   // Return the access token, refresh token, and user information
   return { user, accessToken, refreshToken };

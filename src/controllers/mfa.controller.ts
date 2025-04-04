@@ -9,7 +9,7 @@ import { CustomError } from '@/error/custom.api.error';
 import { setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
-import { generateMFASecret, revokeMFA, verifyMFAForLogin, verifyMFASetup } from '@/services/mfa.service';
+import { generateMFASecret, revokeMFA, verifyMFAForLogin, verifyMFASetup } from '@/services/auth/mfa.service';
 
 import type { VerifyMfaForLoginType, VerifyMfaSetupType } from '@/schema/auth/mfa.schema';
 
