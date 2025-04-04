@@ -21,11 +21,6 @@ const appVersion = packageJson.version;
 
 /**
  * Root handler that sends basic information about the application.
- *
- * @param {Request} req - Express request object.
- * @param {Response} res - Express response object.
- * @throws {CustomError} Throws an error if required environment variables are missing.
- * @returns {void} Sends a response with application info.
  */
 export const rootRouteHandler = asyncCatch(async (req: Request, res: Response) => {
   const t = req.t;
@@ -46,9 +41,6 @@ export const rootRouteHandler = asyncCatch(async (req: Request, res: Response) =
 /**
  * Handles health check requests.
  * Returns application and system health metrics.
- *
- * @param req - Express Request object.
- * @param res - Express Response object.
  */
 export const getHealthHandler = asyncCatch(async (req: Request, res: Response) => {
   const t = req.t;
@@ -63,9 +55,7 @@ export const getHealthHandler = asyncCatch(async (req: Request, res: Response) =
 
 /**
  * Handler to return performance metrics.
- *
- * @param req - Express Request object.
- * @param res - Express Response object.
+ * It simulates a delay based on the loop count provided in the query parameters.
  */
 export const metricsHandler = asyncCatch(async (req: Request<{}, {}, {}, MetricsType['query']>, res: Response) => {
   const t = req.t;

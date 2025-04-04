@@ -19,10 +19,12 @@ interface SendEmailParams {
   t: TFunction;
 }
 
+// Default sender email address
 const FROM_EMAIL = `Vendo <support@${env.resend.RESEND_DOMAIN}>`;
 
 /**
  * Function to send an email using Resend API.
+ *
  * @param {SendEmailParams} params - The parameters for sending the email.
  * @param {string | string[]} params.to - The recipient email address(es).
  * @param {string} params.subject - The subject of the email.

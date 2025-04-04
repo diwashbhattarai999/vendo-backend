@@ -19,9 +19,9 @@ import { logger } from '@/logger/winston.logger';
 type LoginServicePayload = LoginType['body'] & { userAgent?: string };
 
 /**
- * Login service function
- * Handles user login by validating the credentials,
- * creating a session, and generating access and refresh tokens.
+ * Service to handle user login.
+ * It checks if the user exists, validates the password,
+ * and generates access and refresh tokens for the user.
  */
 export const loginService = async (t: TFunction, payload: LoginServicePayload) => {
   const { email, password, userAgent } = payload;

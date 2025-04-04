@@ -15,46 +15,55 @@ import { logger } from '@/logger/winston.logger';
  */
 const startServer = () => {
   try {
+    const { PORT, NODE_ENV } = env.app;
+
     // Initialize the server
-    const server = app.listen(env.app.PORT, () => {
-      logger.info(
-        `\nServer is running in ${env.app.NODE_ENV} mode\n- Local: http://localhost:${env.app.PORT}\n- Network: http://${getLocalIPAddress()}:${env.app.PORT}`,
-      );
+    const server = app.listen(PORT, () => {
+      logger.info(`\nServer is running in ${NODE_ENV} mode\n- Local: http://localhost:${PORT}\n- Network: http://${getLocalIPAddress()}:${PORT}`);
     });
 
     // Handle server errors
     server.on('error', (error: NodeJS.ErrnoException) => {
       if (error.syscall !== 'listen') throw error;
 
-      switch (error.code) {
-        case 'EACCES':
-          logger.error(`Port ${env.app.PORT} requires elevated privileges`);
-          process.exit(1);
-          break;
-        case 'EADDRINUSE':
-          logger.error(`Port ${env.app.PORT} is already in use`);
-          process.exit(1);
-          break;
-        default:
-          throw error;
+      // Handle specific error codes using a dictionary
+      // to map error codes to user-friendly messages
+      const messages: Record<string, string> = {
+        EACCES: `Port ${PORT} requires elevated privileges.`,
+        EADDRINUSE: `Port ${PORT} is already in use.`,
+      };
+
+      // Log the error message and exit the process if it matches a known error code
+      // Otherwise, throw the error for further handling
+      if (messages[error.code!]) {
+        logger.error(messages[error.code!]);
+        process.exit(1);
+      } else {
+        throw error;
       }
     });
 
-    // Graceful server shutdown handler
-    const onShutdown = async () => {
+    /**
+     * Graceful shutdown handler.
+     * Ensures cleanup before shutting down the server.
+     */
+    const shutdown = async () => {
       logger.info('Shutting down server...');
 
-      // ** NOTE: Add cleanup code here, such as closing database connections. **
-
-      server.close(() => {
-        logger.info('Server shut down successfully');
-        process.exit(0);
-      });
+      try {
+        server.close(() => {
+          logger.info('Server shut down successfully.');
+          process.exit(0);
+        });
+      } catch (err) {
+        logger.error('Error during shutdown:', err);
+        process.exit(1);
+      }
     };
 
     // Handle termination signals for graceful shutdown
-    process.on('SIGINT', onShutdown);
-    process.on('SIGTERM', onShutdown);
+    process.on('SIGINT', shutdown);
+    process.on('SIGTERM', shutdown);
   } catch (error) {
     logger.error('Error initializing app:', error);
     process.exit(1);

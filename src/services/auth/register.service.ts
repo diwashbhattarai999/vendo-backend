@@ -1,4 +1,3 @@
-import type { User } from '@prisma/client';
 import type { TFunction } from 'i18next';
 
 import { env } from '@/config/env';
@@ -22,13 +21,11 @@ import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
 
 /**
  * Service to handle user registration.
- * This function checks if the user already exists in the database,
- * hashes the password, and creates a new user.
- *
- * @param {Request} req - The request object containing user registration data.
- * @returns {Promise<RegisterType['body']>} - The newly created user data without the password.
+ * It checks if the user already exists, hashes the password,
+ * creates a new user, generates a verification token,
+ * and sends a verification email to the user.
  */
-export const registerService = async (t: TFunction, payload: RegisterType['body']): Promise<Omit<User, 'password'>> => {
+export const registerService = async (t: TFunction, payload: RegisterType['body']) => {
   const { email, password, firstName, lastName } = payload;
 
   // Check if email already exists in the database

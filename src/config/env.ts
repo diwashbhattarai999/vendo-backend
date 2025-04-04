@@ -6,6 +6,10 @@ import { logger } from '@/logger/winston.logger';
 
 dotenvFlow.config();
 
+/**
+ * Load environment variables from .env files
+ * and validate them using Zod schema.
+ */
 const parsedEnv = envSchema.safeParse({
   app: {
     NODE_ENV: process.env.NODE_ENV,
@@ -38,4 +42,8 @@ if (!parsedEnv.success) {
   process.exit(1);
 }
 
+/**
+ * Export the validated environment variables
+ * to be used throughout the application.
+ */
 export const env = parsedEnv.data;

@@ -23,17 +23,12 @@ rootRouter.get('/', rootRouteHandler); // Handles GET requests to the root endpo
 /**
  * GET /health
  * @description Endpoint to check the health of the application.
- * @route GET /health
- * @returns {Object} 200 - The application health status.
  */
 rootRouter.get('/health', getHealthHandler);
 
 /**
  * GET /metrics
  * @description Endpoint to retrieve application performance metrics.
- * @route GET /metrics
- * @returns {Object} 200 - The application performance metrics.
- * @returns {string} 500 - Internal server error if metrics cannot be retrieved.
  */
 rootRouter.get('/metrics', validateSchema(metricsSchema), metricsHandler);
 

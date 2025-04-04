@@ -14,6 +14,11 @@ import { deleteSessionByUserId } from '../session.service';
 import { getUserById, updateUser } from '../user.service';
 import { deleteVerificationToken, findVerificationToken } from '../verification.service';
 
+/**
+ * Service to handle the password reset process.
+ * It checks if the verification token is valid, updates the user's password,
+ * and deletes the verification token and session.
+ */
 export const resetPasswordService = async (t: TFunction, payload: ResetPasswordType['body']) => {
   const { password, verificationToken } = payload;
 

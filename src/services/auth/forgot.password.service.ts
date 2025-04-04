@@ -16,6 +16,11 @@ import { countVerificationTokens, generateVerificationTokenForPasswordReset } fr
 import { sendEmail } from '@/mailers/mailer';
 import { passwordResetTemplate } from '@/mailers/templates/password.reset.template';
 
+/**
+ * Service to handle the password reset process.
+ * It checks if the user exists, counts the number of password reset emails sent in the last 3 minutes,
+ * generates a new password reset token, and sends the password reset email to the user.
+ */
 export const forgotPasswordService = async (t: TFunction, email: string) => {
   // Check if the user exists, if not, throw an error
   const user = await getUserByEmail(email);

@@ -9,6 +9,12 @@ import { CustomError } from '@/error/custom.api.error';
 import { updateUser } from '../user.service';
 import { deleteVerificationToken, findVerificationToken } from '../verification.service';
 
+/**
+ * Service to handle email verification.
+ * It checks if the verification token is valid,
+ * updates the user's email verification status,
+ * and deletes the verification token.
+ */
 export const verifyEmailService = async (t: TFunction, token: string) => {
   // Check if the verification token is provided, if not, throw an error
   const validToken = await findVerificationToken(token, VERIFICATION_TYPES.EMAIL_VERIFICATION);

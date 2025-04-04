@@ -13,16 +13,11 @@ import { refreshTokenSignOptions, type RefreshTPayload, signJwtToken, verifyJwtT
 import prisma from '@/database/prisma-client';
 
 /**
- * Service to handle token refresh.
- * This function verifies the refresh token,
- * checks the session in the database,
- * and generates a new access token.
- *
- * @param {Request} req - The request object.
- * @param {string} refreshToken - The refresh token to verify.
- * @returns {Promise<{ accessToken: string; newRefreshToken?: string }>} - The new access token and optional refresh token.
+ * Service to refresh the access token using the refresh token.
+ * It verifies the refresh token, checks if the session exists,
+ * and generates a new access token and refresh token if needed.
  */
-export const refreshTokenService = async (t: TFunction, refreshToken: string): Promise<{ accessToken: string; newRefreshToken?: string }> => {
+export const refreshTokenService = async (t: TFunction, refreshToken: string) => {
   // Verify the refresh token and extract the payload
   const { payload } = verifyJwtToken<RefreshTPayload>(refreshToken, { secret: refreshTokenSignOptions.secret });
   if (!payload) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_REFRESH_TOKEN_INVALID, t('refresh_token.invalid', { ns: 'auth' }));

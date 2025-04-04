@@ -10,6 +10,18 @@ import { clearAuthenticationCookies, REFRESH_PATH } from '@/utils/cookie';
 
 import { logger } from '@/logger/winston.logger';
 
+/**
+ * Middleware to handle global errors in the application.
+ *
+ * This middleware is used to catch and handle errors that occur during the request processing.
+ * It formats the error response and sends it back to the client in a standardized format.
+ * It also logs the error message for debugging purposes.
+ *
+ * @param err - The error object.
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @param next - The next middleware function.
+ */
 export function globalErrorHandler(err: CustomError, req: Request, res: Response, next: NextFunction) {
   const t = req.t;
 

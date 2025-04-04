@@ -14,14 +14,10 @@ import { generateMFASecret, revokeMFA, verifyMFAForLogin, verifyMFASetup } from 
 import type { VerifyMfaForLoginType, VerifyMfaSetupType } from '@/schema/auth/mfa.schema';
 
 /**
+ * Generate MFA API Controller
  * Generates a two-factor authentication (2FA) setup for the user.
  * It checks if MFA is already enabled, generates a new secret key,
  * and returns the QR code image URL for the user to scan with their authenticator app.
- *
- * @param {Request} req - Express request object.
- * @param {Response} res - Express response object.
- * @throws {CustomError} Throws an error if MFA is already enabled or if the user is not authenticated.
- * @returns {Promise<void>} Sends a response with the QR code image URL and secret key.
  */
 export const generateMFAHandler = asyncCatch(async (req: Request, res: Response) => {
   const t = req.t;
@@ -38,14 +34,10 @@ export const generateMFAHandler = asyncCatch(async (req: Request, res: Response)
 });
 
 /**
+ * Verify MFA Setup API Controller
  * Verifies the two-factor authentication (2FA) setup for the user.
  * It checks if MFA is already enabled, verifies the OTP code,
  * and updates the user's preferences to enable MFA.
- *
- * @param {Request} req - Express request object.
- * @param {Response} res - Express response object.
- * @throws {CustomError} Throws an error if MFA is already enabled or if the user is not authenticated.
- * @returns {Promise<void>} Sends a response with the updated user preferences.
  */
 export const verifyMFASetupHandler = asyncCatch(async (req: Request<{}, {}, VerifyMfaSetupType['body']>, res) => {
   const t = req.t;
@@ -63,13 +55,9 @@ export const verifyMFASetupHandler = asyncCatch(async (req: Request<{}, {}, Veri
 });
 
 /**
+ * Revoke MFA API Controller
  * Revokes the two-factor authentication (2FA) setup for the user.
  * It checks if MFA is enabled, revokes it, and updates the user's preferences.
- *
- * @param {Request} req - Express request object.
- * @param {Response} res - Express response object.
- * @throws {CustomError} Throws an error if MFA is not enabled or if the user is not authenticated.
- * @returns {Promise<void>} Sends a response with the updated user preferences.
  */
 export const revokeMFAHandler = asyncCatch(async (req, res) => {
   const t = req.t;
@@ -86,12 +74,9 @@ export const revokeMFAHandler = asyncCatch(async (req, res) => {
 });
 
 /**
+ * Verify MFA for Login API Controller
  * Verifies the two-factor authentication (2FA) code for login.
  * It checks if MFA is enabled, verifies the OTP code, and returns the user and session details.
- *
- * @param {Request} req - Express request object.
- * @throws {CustomError} Throws an error if MFA is not enabled or if the OTP code is invalid.
- * @returns {Promise<void>} Sends a response with the user and session details.
  */
 export const verifyMFAForLoginHandler = asyncCatch(async (req: Request<{}, {}, VerifyMfaForLoginType['body']>, res) => {
   const t = req.t;

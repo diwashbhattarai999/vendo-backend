@@ -2,16 +2,25 @@ import { PrismaClient } from '@prisma/client';
 
 import { isDevelopment } from '@/utils/env.utils';
 
-// add prisma to the NodeJS global type
+/**
+ * This file is used to create a singleton instance of PrismaClient.
+ * It ensures that only one instance of PrismaClient is created and reused throughout the application.
+ * This is important for performance and to avoid connection issues with the database.
+ */
+
+// Extend the NodeJS global object to include the PrismaClient instance
 interface CustomNodeJsGlobal extends Global {
   prisma: PrismaClient;
 }
 
-// Prevent multiple instances of Prisma Client in development
+// Create a global variable to hold the PrismaClient instance
 declare const global: CustomNodeJsGlobal;
 
+// Create a new PrismaClient instance
 const prisma = global.prisma || new PrismaClient();
 
+// If in development mode, use the global instance to avoid creating multiple instances
 if (isDevelopment) global.prisma = prisma;
 
+// Export the PrismaClient instance for use in other parts of the application
 export default prisma;

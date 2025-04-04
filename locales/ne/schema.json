@@ -1,0 +1,22 @@
+{
+  "auth": {
+    "emailRequired": "इमेल आवश्यक छ",
+    "invalidEmail": "अवैध इमेल ठेगाना",
+    "emailEmpty": "इमेल खाली हुन सक्दैन",
+    "emailMaxLength": "इमेल अधिकतम २५५ अक्षर लामो हुनुपर्छ",
+
+    "passwordRequired": "पासवर्ड आवश्यक छ",
+    "passwordMinLength": "पासवर्ड कम्तिमा ८ अक्षर लामो हुनुपर्छ",
+    "passwordMaxLength": "पासवर्ड अधिकतम ३२ अक्षर लामो हुनुपर्छ",
+    "passwordLowercase": "पासवर्डमा कम्तिमा एउटा सानो अक्षर हुनुपर्छ",
+    "passwordUppercase": "पासवर्डमा कम्तिमा एउटा ठूलो अक्षर हुनुपर्छ",
+    "passwordNumber": "पासवर्डमा कम्तिमा एउटा संख्या हुनुपर्छ",
+    "passwordSpecial": "पासवर्डमा कम्तिमा एउटा विशेष अक्षर हुनुपर्छ",
+
+    "confirmPasswordRequired": "पासवर्ड पुष्टि आवश्यक छ",
+
+    "verificationTokenRequired": "प्रमाणीकरण टोकन आवश्यक छ",
+    "verificationTokenEmpty": "प्रमाणीकरण टोकन खाली हुन सक्दैन",
+    "verificationTokenMaxLength": "प्रमाणीकरण टोकन अधिकतम ३२ अक्षर लामो हुनुपर्छ"
+  }
+}

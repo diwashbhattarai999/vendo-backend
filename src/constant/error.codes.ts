@@ -1,3 +1,9 @@
+/**
+ * Error codes for the application.
+ * These codes are used to identify specific error conditions
+ * and provide meaningful messages to the user.
+ * They are also used for logging and debugging purposes.
+ */
 export enum ERROR_CODES {
   TOO_MANY_REQUESTS = 'TOO_MANY_REQUESTS',
   GENERAL_ERROR = 'GENERAL_ERROR',

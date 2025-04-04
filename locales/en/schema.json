@@ -1,0 +1,22 @@
+{
+  "auth": {
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email address",
+    "emailEmpty": "Email cannot be empty",
+    "emailMaxLength": "Email must be at most 255 characters long",
+
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 8 characters long",
+    "passwordMaxLength": "Password must be at most 32 characters long",
+    "passwordLowercase": "Password must contain at least one lowercase letter",
+    "passwordUppercase": "Password must contain at least one uppercase letter",
+    "passwordNumber": "Password must contain at least one number",
+    "passwordSpecial": "Password must contain at least one special character",
+
+    "confirmPasswordRequired": "Confirm password is required",
+
+    "verificationTokenRequired": "Verification token is required",
+    "verificationTokenEmpty": "Verification token cannot be empty",
+    "verificationTokenMaxLength": "Verification token must be at most 32 characters long"
+  }
+}

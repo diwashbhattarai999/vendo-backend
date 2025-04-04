@@ -1,3 +1,7 @@
+/**
+ * HTTP Status Codes
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+ */
 export const STATUS_CODES = {
   // Informational Responses
   CONTINUE: 100,
