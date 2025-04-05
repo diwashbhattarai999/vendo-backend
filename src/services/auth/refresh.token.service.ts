@@ -10,7 +10,8 @@ import { CustomError } from '@/error/custom.api.error';
 import { calculateExpirationDate, ONE_DAY_IN_MS } from '@/utils/date.time';
 import { refreshTokenSignOptions, type RefreshTPayload, signJwtToken, verifyJwtToken } from '@/utils/jwt';
 
-import prisma from '@/database/prisma-client';
+import { getSessionById, updateSessionExpiration } from '../db/session.service';
+
 import { logger } from '@/logger/winston.logger';
 
 /**
@@ -29,7 +30,7 @@ export const refreshTokenService = async (t: TFunction, refreshToken: string) =>
   }
 
   // Check if the session exists in the database
-  const session = await prisma.session.findUnique({ where: { id: payload.sessionId } });
+  const session = await getSessionById(payload.sessionId);
   if (!session) {
     logger.warn(`No session found for session ID: ${payload.sessionId}`);
     throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_SESSION_NOT_FOUND, t('session.does_not_exist', { ns: 'auth' }));
@@ -49,10 +50,7 @@ export const refreshTokenService = async (t: TFunction, refreshToken: string) =>
 
   // Update the session expiration date if it requires a refresh
   if (sessionRequireRefresh) {
-    await prisma.session.update({
-      where: { id: payload.sessionId },
-      data: { expiresAt: calculateExpirationDate(env.jwt.ACCESS_TOKEN_EXPIRES_IN) },
-    });
+    await updateSessionExpiration(session.id, calculateExpirationDate(env.jwt.ACCESS_TOKEN_EXPIRES_IN));
     logger.info(`Session expiration updated for session ID: ${session.id}`);
   }
 

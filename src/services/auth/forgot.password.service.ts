@@ -10,8 +10,8 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { anHourFromNow, threeMinutesAgo } from '@/utils/date.time';
 
-import { getUserByEmail } from '../user.service';
-import { countVerificationTokens, generateVerificationTokenForPasswordReset } from '../verification.service';
+import { getUserByEmail } from '../db/user.service';
+import { countVerificationTokens, generateVerificationTokenForPasswordReset } from '../db/verification.service';
 
 import { logger } from '@/logger/winston.logger';
 import { sendEmail } from '@/mailers/mailer';

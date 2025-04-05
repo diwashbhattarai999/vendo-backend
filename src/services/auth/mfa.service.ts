@@ -9,9 +9,9 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { refreshTokenSignOptions, signJwtToken } from '@/utils/jwt';
 
-import { createSession } from '../session.service';
-import { updateUserPreferences } from '../user.preferences.service';
-import { getUserByEmail } from '../user.service';
+import { createSession } from '../db/session.service';
+import { updateUserPreferences } from '../db/user.preferences.service';
+import { getUserByEmail } from '../db/user.service';
 
 import { logger } from '@/logger/winston.logger';
 

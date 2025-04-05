@@ -11,7 +11,7 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { sanitizeUser } from '@/utils/sanitize.data';
 
-import { getUserById } from '@/services/user.service';
+import { getUserById } from '@/services/db/user.service';
 
 /**
  * Interface for the JWT payload.

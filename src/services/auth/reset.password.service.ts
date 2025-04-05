@@ -11,9 +11,9 @@ import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { ResetPasswordType } from '@/schema/auth/password.schema';
 
-import { deleteSessionByUserId } from '../session.service';
-import { getUserById, updateUser } from '../user.service';
-import { deleteVerificationToken, findVerificationToken } from '../verification.service';
+import { deleteSessionByUserId } from '../db/session.service';
+import { getUserById, updateUser } from '../db/user.service';
+import { deleteVerificationToken, findVerificationToken } from '../db/verification.service';
 
 import { logger } from '@/logger/winston.logger';
 
