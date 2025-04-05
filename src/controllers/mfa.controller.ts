@@ -1,15 +1,15 @@
 import type { Request, Response } from 'express';
 
-import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
 
 import { asyncCatch } from '@/error/async.catch';
-import { CustomError } from '@/error/custom.api.error';
 
 import { setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
 import { generateMFASecret, revokeMFA, verifyMFAForLogin, verifyMFASetup } from '@/services/auth/mfa.service';
+
+import { getAuthenticatedUser } from '@/middlewares/get.authenticated.user';
 
 import type { VerifyMfaForLoginType, VerifyMfaSetupType } from '@/schema/auth/mfa.schema';
 
@@ -22,9 +22,8 @@ import type { VerifyMfaForLoginType, VerifyMfaSetupType } from '@/schema/auth/mf
 export const generateMFAHandler = asyncCatch(async (req: Request, res: Response) => {
   const t = req.t;
 
-  // Check if MFA is already enabled
-  const user = req.user;
-  if (!user) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('unauthorized', { ns: 'error' }));
+  // Get the authenticated user from the request
+  const user = await getAuthenticatedUser(req);
 
   // Call the service to generate the 2FA secret
   const setupDetails = await generateMFASecret(user, t);
@@ -43,9 +42,8 @@ export const verifyMFASetupHandler = asyncCatch(async (req: Request<{}, {}, Veri
   const t = req.t;
   const { otpCode, secretKey } = req.body;
 
-  // Check if MFA is already enabled
-  const user = req.user;
-  if (!user) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('unauthorized', { ns: 'error' }));
+  // Get the authenticated user from the request
+  const user = await getAuthenticatedUser(req);
 
   // Call the service to verify the OTP code
   const { userPreferences } = await verifyMFASetup(otpCode, secretKey, t, user);
@@ -59,12 +57,11 @@ export const verifyMFASetupHandler = asyncCatch(async (req: Request<{}, {}, Veri
  * Revokes the two-factor authentication (2FA) setup for the user.
  * It checks if MFA is enabled, revokes it, and updates the user's preferences.
  */
-export const revokeMFAHandler = asyncCatch(async (req, res) => {
+export const revokeMFAHandler = asyncCatch(async (req: Request, res) => {
   const t = req.t;
 
-  // Check if MFA is already enabled
-  const user = req.user;
-  if (!user) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('unauthorized', { ns: 'error' }));
+  // Get the authenticated user from the request
+  const user = await getAuthenticatedUser(req);
 
   // Call the service to revoke MFA
   const { userPreferences } = await revokeMFA(user, t);
