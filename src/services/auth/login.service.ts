@@ -1,3 +1,4 @@
+import { addMinutes, isBefore } from 'date-fns';
 import type { TFunction } from 'i18next';
 
 import { ERROR_CODES } from '@/constant/error.codes';
@@ -11,12 +12,16 @@ import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 
-import { createSession } from '../session.service';
-import { getUserByEmail } from '../user.service';
+import { createLoginAttempt, getLoginAttemptByIp, resetLoginAttempts, updateLoginAttempt } from '../db/login.attempts.service';
+import { createSession } from '../db/session.service';
+import { getUserByEmail } from '../db/user.service';
 
 import { logger } from '@/logger/winston.logger';
 
-type LoginServicePayload = LoginType['body'] & { userAgent?: string };
+type LoginServicePayload = LoginType['body'] & { userAgent?: string; ipAddress: string };
+
+const MAX_ATTEMPTS = 5;
+const BLOCK_DURATION_MINUTES = 15;
 
 /**
  * Service to handle user login.
@@ -24,7 +29,7 @@ type LoginServicePayload = LoginType['body'] & { userAgent?: string };
  * and generates access and refresh tokens for the user.
  */
 export const loginService = async (t: TFunction, payload: LoginServicePayload) => {
-  const { email, password, userAgent } = payload;
+  const { email, password, userAgent, ipAddress } = payload;
 
   logger.debug(`Processing login for email: ${email}`);
 
@@ -39,19 +44,24 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   const isPasswordValid = await compareValue(password, user.password);
   if (!isPasswordValid) {
     logger.warn(`Login failed: Incorrect password for user ID: ${user.id}`);
+
+    // Track failed login attempts
+    await checkAndTrackFailedLoginAttempts(ipAddress, userAgent);
+
+    // Throw an error if the password is incorrect
     throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_CREDENTIALS, t('login.invalid_credentials', { ns: 'auth' }));
   }
+
+  // Reset login attempts on successful login
+  await resetLoginAttempts(ipAddress);
+  logger.info(`Login attempts reset for IP: ${ipAddress}`);
 
   // Check if the user enable 2fa retuen user= null
   if (user.userPreferences?.enable2FA) {
     logger.info(`2FA required for login. User ID: ${user.id}`);
-    return {
-      user: null,
-      mfaRequired: true,
-      accessToken: '',
-      refreshToken: '',
-    };
+    return { user: null, mfaRequired: true, accessToken: '', refreshToken: '' };
   }
+
   // Create a session for the user
   const session = await createSession(user.id, userAgent);
   logger.info(`Session created for user ID: ${user.id}, session ID: ${session.id}`);
@@ -68,4 +78,41 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
     refreshToken,
     mfaRequired: false,
   };
+};
+
+const checkAndTrackFailedLoginAttempts = async (ipAddress: string, userAgent?: string) => {
+  const now = new Date();
+  const attempt = await getLoginAttemptByIp(ipAddress);
+
+  if (attempt) {
+    // Check if the user is blocked and if the block duration has not expired
+    if (attempt.blockedUntil && isBefore(now, attempt.blockedUntil)) {
+      const remainingTimeInMin = Math.ceil((attempt.blockedUntil.getTime() - now.getTime()) / (1000 * 60));
+      logger.warn(`Login blocked for IP: ${ipAddress}. Remaining block time: ${remainingTimeInMin} mins`);
+
+      // Throw an error if the user is blocked
+      throw new CustomError(
+        STATUS_CODES.FORBIDDEN,
+        ERROR_CODES.AUTH_BLOCKED,
+        `Too many login attempts. Please try again in ${remainingTimeInMin} minutes.`,
+      );
+    }
+
+    // If user is not blocked, check attempts
+    const newAttempts = attempt.attempts + 1;
+
+    // If attempts exceed max, set blockedUntil
+    const blockedUntil = newAttempts >= MAX_ATTEMPTS ? addMinutes(now, BLOCK_DURATION_MINUTES) : undefined;
+
+    await updateLoginAttempt({
+      id: attempt.id,
+      attempts: newAttempts,
+      lastAttemptAt: now,
+      blockedUntil,
+      userAgent,
+    });
+  } else {
+    // If no previous attempts, create a new record
+    await createLoginAttempt({ userAgent, ipAddress });
+  }
 };

@@ -60,3 +60,14 @@ model VerificationToken {
   expiresAt DateTime
   user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model LoginAttempt {
+  id            String    @id @default(uuid())
+  ipAddress     String
+  userAgent     String?
+  attempts      Int       @default(1)
+  lastAttemptAt DateTime  @default(now())
+  blockedUntil  DateTime?
+
+  @@index([ipAddress])
+}

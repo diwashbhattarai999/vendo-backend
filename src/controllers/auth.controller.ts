@@ -15,7 +15,7 @@ import { refreshTokenService } from '@/services/auth/refresh.token.service';
 import { registerService } from '@/services/auth/register.service';
 import { resetPasswordService } from '@/services/auth/reset.password.service';
 import { verifyEmailService } from '@/services/auth/verify.email.service';
-import { deleteSessionById } from '@/services/session.service';
+import { deleteSessionById } from '@/services/db/session.service';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 import type { ForgotPasswordType, ResetPasswordType } from '@/schema/auth/password.schema';
@@ -45,9 +45,10 @@ export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterTy
 export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['body']>, res) => {
   const t = req.t;
   const userAgent = req.headers['user-agent'];
+  const ipAddress = req.ip;
 
   // Call the login service to authenticate the user
-  const { user, accessToken, refreshToken, mfaRequired } = await loginService(t, { ...req.body, userAgent });
+  const { user, accessToken, refreshToken, mfaRequired } = await loginService(t, { ...req.body, userAgent, ipAddress: ipAddress || '' });
 
   // If MFA is required, send a response indicating that MFA is required
   if (mfaRequired) {
@@ -58,7 +59,7 @@ export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['bo
   // Set authentication cookies
   setAuthenticationCookies({ res, accessToken, refreshToken });
 
-  // Send a success response with the user's information and tokens
+  // Send a success response with the user's information and tokensdiwashb999
   sendHttpResponse(res, STATUS_CODES.OK, t('login.success', { ns: 'auth' }), { user, mfaRequired });
 });
 

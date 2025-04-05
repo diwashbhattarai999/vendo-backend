@@ -8,7 +8,7 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { sendHttpResponse } from '@/utils/send.http.response';
 
-import { deleteSessionByIdAndUserId, getAllSessionsByUserId, getSessionById } from '@/services/session.service';
+import { deleteSessionByIdAndUserId, getAllSessionsByUserId, getSessionUserById } from '@/services/db/session.service';
 
 import type { DeleteSessionType } from '@/schema/auth/session.schema';
 
@@ -48,7 +48,7 @@ export const getSessionHandler = asyncCatch(async (req: Request, res) => {
   if (!sessionId) throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.BAD_REQUEST, t('session.id_not_found', { ns: 'auth' }));
 
   // Call the get session service to retrieve the session by ID
-  const user = await getSessionById(sessionId);
+  const user = await getSessionUserById(sessionId);
   if (!user) throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.NOT_FOUND, t('session.not_found', { ns: 'auth' }));
 
   // Send a success response with the retrieved session
@@ -66,7 +66,7 @@ export const deleteSessionHandler = asyncCatch(async (req: Request<DeleteSession
   const userId = req.user?.id;
 
   // Check if the session with the given ID exists
-  const session = await getSessionById(sessionId);
+  const session = await getSessionUserById(sessionId);
   if (!session) throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.NOT_FOUND, t('session.not_found', { ns: 'auth' }));
 
   // Call the delete session service to delete the session by ID

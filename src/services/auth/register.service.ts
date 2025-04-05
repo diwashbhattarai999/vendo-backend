@@ -14,8 +14,8 @@ import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { RegisterType } from '@/schema/auth/register.schema';
 
-import { createUser, getUserByEmail } from '../user.service';
-import { generateVerificationTokenForEmail } from '../verification.service';
+import { createUser, getUserByEmail } from '../db/user.service';
+import { generateVerificationTokenForEmail } from '../db/verification.service';
 
 import { logger } from '@/logger/winston.logger';
 import { sendEmail } from '@/mailers/mailer';

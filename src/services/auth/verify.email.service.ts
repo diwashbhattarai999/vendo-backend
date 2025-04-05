@@ -8,8 +8,8 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { sanitizeUser } from '@/utils/sanitize.data';
 
-import { updateUser } from '../user.service';
-import { deleteVerificationToken, findVerificationToken } from '../verification.service';
+import { updateUser } from '../db/user.service';
+import { deleteVerificationToken, findVerificationToken } from '../db/verification.service';
 
 import { logger } from '@/logger/winston.logger';
 
