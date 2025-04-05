@@ -17,11 +17,13 @@ import { createSession } from '../db/session.service';
 import { getUserByEmail } from '../db/user.service';
 
 import { logger } from '@/logger/winston.logger';
+import { sendEmail } from '@/mailers/mailer';
+import { blockedLoginTemplate } from '@/mailers/templates/blocked.login.template';
 
 type LoginServicePayload = LoginType['body'] & { userAgent?: string; ipAddress: string };
 
 const MAX_ATTEMPTS = 5;
-const BLOCK_DURATION_MINUTES = 15;
+const BLOCK_DURATION_MINUTES = 1;
 
 /**
  * Service to handle user login.
@@ -46,15 +48,18 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
     logger.warn(`Login failed: Incorrect password for user ID: ${user.id}`);
 
     // Track failed login attempts
-    await checkAndTrackFailedLoginAttempts(ipAddress, userAgent);
+    await checkAndTrackFailedLoginAttempts(t, ipAddress, user.email, userAgent);
 
     // Throw an error if the password is incorrect
     throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_CREDENTIALS, t('login.invalid_credentials', { ns: 'auth' }));
   }
 
   // Reset login attempts on successful login
-  await resetLoginAttempts(ipAddress);
-  logger.info(`Login attempts reset for IP: ${ipAddress}`);
+  const attempt = await getLoginAttemptByIp(ipAddress);
+  if (attempt) {
+    await resetLoginAttempts(attempt.id);
+    logger.info(`Login attempts reset for IP: ${ipAddress}`);
+  }
 
   // Check if the user enable 2fa retuen user= null
   if (user.userPreferences?.enable2FA) {
@@ -80,7 +85,7 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   };
 };
 
-const checkAndTrackFailedLoginAttempts = async (ipAddress: string, userAgent?: string) => {
+const checkAndTrackFailedLoginAttempts = async (t: TFunction, ipAddress: string, email: string, userAgent?: string) => {
   const now = new Date();
   const attempt = await getLoginAttemptByIp(ipAddress);
 
@@ -94,16 +99,22 @@ const checkAndTrackFailedLoginAttempts = async (ipAddress: string, userAgent?: s
       throw new CustomError(
         STATUS_CODES.FORBIDDEN,
         ERROR_CODES.AUTH_BLOCKED,
-        `Too many login attempts. Please try again in ${remainingTimeInMin} minutes.`,
+        t('login.too_many_attempts', { ns: 'auth', minutes: remainingTimeInMin }),
       );
     }
 
-    // If user is not blocked, check attempts
+    // Reset the attempts if the block duration has expired
+    if (attempt.blockedUntil && now >= attempt.blockedUntil) {
+      logger.info(`Block duration expired for IP: ${ipAddress}. Resetting login attempts.`);
+      await resetLoginAttempts(attempt.id);
+      return;
+    }
+
     const newAttempts = attempt.attempts + 1;
+    const isNowBlocked = newAttempts >= MAX_ATTEMPTS;
+    const blockedUntil = isNowBlocked ? addMinutes(now, BLOCK_DURATION_MINUTES) : undefined;
 
-    // If attempts exceed max, set blockedUntil
-    const blockedUntil = newAttempts >= MAX_ATTEMPTS ? addMinutes(now, BLOCK_DURATION_MINUTES) : undefined;
-
+    // Update the login attempt record with the new attempts count and block status
     await updateLoginAttempt({
       id: attempt.id,
       attempts: newAttempts,
@@ -111,6 +122,13 @@ const checkAndTrackFailedLoginAttempts = async (ipAddress: string, userAgent?: s
       blockedUntil,
       userAgent,
     });
+
+    // Send a email to the user if they are blocked
+    if (isNowBlocked) {
+      const resetUrl = `${process.env.CLIENT_URL}/auth/forgot-password`;
+      await sendEmail({ t, to: email, ...blockedLoginTemplate(BLOCK_DURATION_MINUTES, resetUrl) });
+    }
+    logger.info(`Login attempt recorded for IP: ${ipAddress}. Attempts: ${newAttempts}`);
   } else {
     // If no previous attempts, create a new record
     await createLoginAttempt({ userAgent, ipAddress });

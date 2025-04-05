@@ -39,6 +39,14 @@ export const updateLoginAttempt = async (payload: UpdateLoginAttemptPayload) => 
   });
 };
 
-export const resetLoginAttempts = async (ipAddress: string) => {
-  return await prisma.loginAttempt.deleteMany({ where: { ipAddress } });
+export const resetLoginAttempts = async (id: string) => {
+  // return await prisma.loginAttempt.deleteMany({ where: { ipAddress } });
+  return await prisma.loginAttempt.update({
+    where: { id },
+    data: {
+      attempts: 0,
+      lastAttemptAt: new Date(),
+      blockedUntil: null,
+    },
+  });
 };
