@@ -24,7 +24,7 @@ export const generateMFASecret = async (user: Express.User, t: TFunction) => {
   logger.debug(`Attempting to generate MFA secret for user ID: ${user.id}`);
 
   // Check if MFA is already enabled
-  if (user.userPreferences?.enable2FA) {
+  if (user.userPreferences?.isTwoFactorEnabled) {
     logger.warn(`MFA already enabled for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'error' }));
   }
@@ -63,7 +63,7 @@ export const generateMFASecret = async (user: Express.User, t: TFunction) => {
 export const verifyMFASetup = async (otpCode: string, secretKey: string, t: TFunction, user: Express.User) => {
   logger.debug(`Verifying MFA setup for user ID: ${user.id}`);
 
-  if (user.userPreferences?.enable2FA) {
+  if (user.userPreferences?.isTwoFactorEnabled) {
     logger.warn(`MFA already enabled for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'error' }));
   }
@@ -82,10 +82,10 @@ export const verifyMFASetup = async (otpCode: string, secretKey: string, t: TFun
   }
 
   // Update the user's preferences to enable MFA
-  const updatedUserPreferences = await updateUserPreferences(user.id, { enable2FA: true });
+  const updatedUserPreferences = await updateUserPreferences(user.id, { isTwoFactorEnabled: true });
   logger.info(`MFA setup successfully completed for user ID: ${user.id}`);
 
-  return { userPreferences: { enable2FA: updatedUserPreferences.enable2FA } };
+  return { userPreferences: { isTwoFactorEnabled: updatedUserPreferences.isTwoFactorEnabled } };
 };
 
 /**
@@ -94,16 +94,16 @@ export const verifyMFASetup = async (otpCode: string, secretKey: string, t: TFun
 export const revokeMFA = async (user: Express.User, t: TFunction) => {
   logger.debug(`Revoking MFA for user ID: ${user.id}`);
 
-  if (!user.userPreferences?.enable2FA) {
+  if (!user.userPreferences?.isTwoFactorEnabled) {
     logger.warn(`MFA not enabled for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_NOT_ENABLED, t('mfa.not_enabled', { ns: 'auth' }));
   }
 
   // Disable MFA and remove the secret key
-  const updatedUserPreferences = await updateUserPreferences(user.id, { enable2FA: false, twoFactorSecret: null });
+  const updatedUserPreferences = await updateUserPreferences(user.id, { isTwoFactorEnabled: false, twoFactorSecret: null });
   logger.info(`MFA successfully revoked for user ID: ${user.id}`);
 
-  return { userPreferences: { enable2FA: updatedUserPreferences.enable2FA } };
+  return { userPreferences: { isTwoFactorEnabled: updatedUserPreferences.isTwoFactorEnabled } };
 };
 
 /**
@@ -122,7 +122,7 @@ export const verifyMFAForLogin = async (otpCode: string, email: string, t: TFunc
   }
 
   // Check if MFA is enabled for the user
-  if (!user.userPreferences?.enable2FA || !user.userPreferences.twoFactorSecret) {
+  if (!user.userPreferences?.isTwoFactorEnabled || !user.userPreferences.twoFactorSecret) {
     logger.warn(`Login attempt failed: MFA not enabled for user email: ${email}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_NOT_ENABLED, t('mfa.not_enabled', { ns: 'auth' }));
   }

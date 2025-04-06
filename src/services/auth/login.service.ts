@@ -62,7 +62,7 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   }
 
   // Check if the user enable 2fa retuen user= null
-  if (user.userPreferences?.enable2FA) {
+  if (user.userPreferences?.isTwoFactorEnabled) {
     logger.info(`2FA required for login. User ID: ${user.id}`);
     return { user: null, mfaRequired: true, accessToken: '', refreshToken: '' };
   }

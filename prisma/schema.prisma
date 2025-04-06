@@ -29,12 +29,11 @@ model User {
 }
 
 model UserPreferences {
-  id                String  @id @default(uuid())
-  enable2FA         Boolean @default(false)
-  emailNotification Boolean @default(true)
-  twoFactorSecret   String?
-  userId            String  @unique
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String  @id @default(uuid())
+  isTwoFactorEnabled Boolean @default(false)
+  twoFactorSecret    String?
+  userId             String  @unique
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Session {
