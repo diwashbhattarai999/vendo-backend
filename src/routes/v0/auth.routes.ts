@@ -2,9 +2,9 @@ import { Router } from 'express';
 
 import {
   forgotPasswordHandler,
-  googleAuthHandler,
   loginHandler,
   logoutHandler,
+  oauthRedirectHandler,
   refreshTokenHandler,
   registerHandler,
   resetPasswordHandler,
@@ -18,6 +18,7 @@ import { forgotPasswordSchema, resetPasswordSchema } from '@/schema/auth/passwor
 import { registerSchema } from '@/schema/auth/register.schema';
 import { verifyEmailSchema } from '@/schema/auth/verify.email.schema';
 
+import { facebookAuthMiddleware } from '@/strategies/facebook.strategy';
 import { googleAuthMiddleware } from '@/strategies/google.strategy';
 import { authenticateJWT } from '@/strategies/jwt.strategy';
 
@@ -81,6 +82,18 @@ authRouter.get('/google', googleAuthMiddleware);
  * GET /google/callback
  * @description Callback endpoint for Google authentication.
  */
-authRouter.get('/google/callback', googleAuthMiddleware, googleAuthHandler);
+authRouter.get('/google/callback', googleAuthMiddleware, oauthRedirectHandler);
+
+/**
+ * GET /facebook
+ * @description Endpoint to initiate Facebook authentication.
+ */
+authRouter.get('/facebook', facebookAuthMiddleware);
+
+/**
+ * GET /facebook/callback
+ * @description Callback endpoint for Facebook authentication.
+ */
+authRouter.get('/facebook/callback', facebookAuthMiddleware, oauthRedirectHandler);
 
 export { authRouter };

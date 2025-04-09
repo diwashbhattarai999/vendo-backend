@@ -1,4 +1,4 @@
-import { Provider } from '@prisma/client';
+import type { Provider } from '@prisma/client';
 import type { TFunction } from 'i18next';
 
 import { ERROR_CODES } from '@/constant/error.codes';
@@ -8,8 +8,8 @@ import { CustomError } from '@/error/custom.api.error';
 
 import { sanitizeUser } from '@/utils/sanitize.data';
 
-import { getAccountByProvider } from '../db/account.service';
-import { createGoogleUser } from '../db/user.service';
+import { getAccountByEmail, getAccountByProvider } from '../db/account.service';
+import { createOauthUser } from '../db/user.service';
 
 interface LoginOrCreateAccountType {
   t: TFunction;
@@ -27,9 +27,9 @@ interface LoginOrCreateAccountType {
 export const loginOrCreateAccountService = async (data: LoginOrCreateAccountType) => {
   const { t, provider, providerId, firstName, lastName, profilePictureUrl, email, emailVerified, accessToken, refreshToken } = data;
 
-  // Check if the email is already registered with different provider(e.g., email and facebook)
-  const existingCredentialAccount = await getAccountByProvider(Provider.EMAIL, email);
-  if (existingCredentialAccount) {
+  // Check if the email is already registered with different provider
+  const existingUser = await getAccountByEmail(email);
+  if (existingUser && existingUser.provider !== provider) {
     throw new CustomError(
       STATUS_CODES.BAD_REQUEST,
       ERROR_CODES.AUTH_EMAIL_ALREADY_REGISTERED_WITH_DIFFERENT_PROVIDER,
@@ -42,7 +42,7 @@ export const loginOrCreateAccountService = async (data: LoginOrCreateAccountType
   if (existingAccount) return { user: existingAccount.user };
 
   // Create a new user and account
-  const newUser = await createGoogleUser({
+  const newUser = await createOauthUser({
     firstName,
     lastName,
     profilePictureUrl,
@@ -51,6 +51,7 @@ export const loginOrCreateAccountService = async (data: LoginOrCreateAccountType
     accessToken,
     providerAccountId: providerId,
     refreshToken,
+    provider,
   });
 
   return { user: sanitizeUser(newUser) };

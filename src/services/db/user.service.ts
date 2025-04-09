@@ -46,7 +46,7 @@ export const updateUser = async (userId: string, data: Partial<User>): Promise<U
   return await prisma.user.update({ where: { id: userId }, data });
 };
 
-export const createGoogleUser = async (payload: {
+export const createOauthUser = async (payload: {
   email: string;
   isEmailVerified: boolean;
   firstName: string;
@@ -55,8 +55,9 @@ export const createGoogleUser = async (payload: {
   providerAccountId: string;
   accessToken: string;
   refreshToken: string;
+  provider: Provider;
 }) => {
-  const { email, firstName, lastName, profilePictureUrl, providerAccountId, accessToken, refreshToken, isEmailVerified } = payload;
+  const { email, firstName, lastName, profilePictureUrl, providerAccountId, accessToken, refreshToken, isEmailVerified, provider } = payload;
 
   return await prisma.user.create({
     data: {
@@ -67,7 +68,7 @@ export const createGoogleUser = async (payload: {
       profilePictureUrl,
       accounts: {
         create: {
-          provider: Provider.GOOGLE,
+          provider,
           providerAccountId,
           type: AccountType.OAUTH,
           accessToken,
