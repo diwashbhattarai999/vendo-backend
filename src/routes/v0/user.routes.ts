@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   changePasswordHandler,
+  deactivateUserHandler,
   deleteUserHandler,
   getUserHandler,
   removeProfilePictureHandler,
@@ -59,5 +60,11 @@ userRouter.put('/profile-picture/upload', multerUpload, uploadProfilePictureHand
  * @description Endpoint to remove the profile picture of the authenticated user.
  */
 userRouter.put('/profile-picture/remove', removeProfilePictureHandler);
+
+/**
+ * PUT /user/deactivate
+ * @description Endpoint to deactivate the authenticated user's account.
+ */
+userRouter.put('/deactivate', deactivateUserHandler);
 
 export { userRouter };

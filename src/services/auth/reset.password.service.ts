@@ -11,7 +11,7 @@ import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { ResetPasswordType } from '@/schema/auth/password.schema';
 
-import { deleteSessionByUserId } from '../db/session.service';
+import { deleteAllSessionsByUserId } from '../db/session.service';
 import { getUserById, updateUser } from '../db/user.service';
 import { deleteVerificationToken, findVerificationToken } from '../db/verification.service';
 
@@ -70,7 +70,7 @@ export const resetPasswordService = async (t: TFunction, payload: ResetPasswordT
   logger.debug(`Reset token deleted for user ID: ${user.id}`);
 
   // Delete the session token if it exists
-  await deleteSessionByUserId(validToken.userId);
+  await deleteAllSessionsByUserId(validToken.userId);
   logger.info(`All sessions invalidated for user ID: ${user.id}`);
 
   return { user: sanitizeUser(updatedUser) };

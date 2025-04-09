@@ -72,7 +72,7 @@ export const updateSessionExpiration = async (sessionId: string, expiresAt: Date
 /**
  * Deletes all sessions associated with a given user ID.
  */
-export const deleteSessionByUserId = async (userId: string) => await prisma.session.deleteMany({ where: { userId } });
+export const deleteAllSessionsByUserId = async (userId: string) => await prisma.session.deleteMany({ where: { userId } });
 
 /**
  * Deletes a session by its ID.
