@@ -5,6 +5,7 @@
   "route_not_found_message": "Endpoint not found.",
   "throttling_message": "Request rate limited. Your requests are temporarily delayed.",
   "unauthorized": "Access denied. You do not have permission to access this resource.",
+  "forbidden": "Access forbidden. You do not have permission to access this resource.",
   "api_key_not_found_message": "API key missing.",
   "api_key_not_matched_message": "Invalid API key.",
   "schema_validation_error": "Data validation failed. Please check your input and try again.",

@@ -171,6 +171,9 @@ export const deactivateUserHandler = asyncCatch(async (req: Request, res) => {
   // Get the authenticated user from the request
   const user = await getAuthenticatedUser(req);
 
+  // Check if the user is already deactivated
+  if (!user.isActive) throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.USER_ALREADY_ACTIVE, t('user.already_deactivated'));
+
   // Call the update user service to deactivate the user account
   await updateUser(user.id, { isActive: false });
 

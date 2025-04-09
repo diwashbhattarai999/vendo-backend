@@ -8,6 +8,7 @@ import prisma from '@/database/prisma-client';
 export const getSessionById = async (sessionId: string) => {
   return await prisma.session.findUnique({
     where: { id: sessionId },
+    include: { user: { select: { id: true, role: true } } },
   });
 };
 

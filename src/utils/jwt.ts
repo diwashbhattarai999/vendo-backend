@@ -1,4 +1,4 @@
-import type { Session, User } from '@prisma/client';
+import type { Session, User, UserRole } from '@prisma/client';
 import jwt, { type SignOptions, type VerifyOptions } from 'jsonwebtoken';
 import type ms from 'ms';
 
@@ -12,6 +12,7 @@ import { logger } from '@/logger/winston.logger';
 export type AccessTPayload = {
   userId: User['id'];
   sessionId: Session['id'];
+  role: UserRole;
 };
 
 /**

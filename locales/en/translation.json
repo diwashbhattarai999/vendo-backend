@@ -20,6 +20,12 @@
     "remove_profile_picture_success": "Profile picture removed successfully.",
     "deactivate_success": "Your account has been deactivated successfully.",
     "activate_success": "You account has been activated successfully.",
-    "account_deactivated": "Your account has been deactivated. Please contact support."
+    "account_deactivated": "Your account has been deactivated. Please contact support.",
+    "not_found": "User not found.",
+    "already_active": "User account is already active.",
+    "already_deactivated": "User account is already deactivated."
+  },
+  "admin": {
+    "user_account_activated": "User account activated successfully."
   }
 }

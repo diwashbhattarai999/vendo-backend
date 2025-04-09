@@ -7,7 +7,7 @@ import { STATUS_CODES } from '@/constant/status.codes';
 
 import { CustomError } from '@/error/custom.api.error';
 
-import { refreshTokenSignOptions, signJwtToken } from '@/utils/jwt';
+import { type AccessTPayload, refreshTokenSignOptions, type RefreshTPayload, signJwtToken } from '@/utils/jwt';
 
 import { createSession } from '../db/session.service';
 import { updateUserPreferences } from '../db/user.preferences.service';
@@ -144,8 +144,8 @@ export const verifyMFAForLogin = async (otpCode: string, email: string, t: TFunc
 
   // Create a session for the user, and generate access and refresh tokens
   const session = await createSession(user.id, userAgent);
-  const accessToken = signJwtToken({ userId: user.id, sessionId: session.id });
-  const refreshToken = signJwtToken({ sessionId: session.id }, refreshTokenSignOptions);
+  const accessToken = signJwtToken<AccessTPayload>({ userId: user.id, sessionId: session.id, role: user.role });
+  const refreshToken = signJwtToken<RefreshTPayload>({ sessionId: session.id }, refreshTokenSignOptions);
 
   logger.info(`Session created for user ID: ${user.id}, accessToken: ${accessToken}`);
 

@@ -8,7 +8,7 @@ import { STATUS_CODES } from '@/constant/status.codes';
 import { CustomError } from '@/error/custom.api.error';
 
 import { calculateExpirationDate, ONE_DAY_IN_MS } from '@/utils/date.time';
-import { refreshTokenSignOptions, type RefreshTPayload, signJwtToken, verifyJwtToken } from '@/utils/jwt';
+import { type AccessTPayload, refreshTokenSignOptions, type RefreshTPayload, signJwtToken, verifyJwtToken } from '@/utils/jwt';
 
 import { getSessionById, updateSessionExpiration } from '../db/session.service';
 
@@ -55,8 +55,8 @@ export const refreshTokenService = async (t: TFunction, refreshToken: string) =>
   }
 
   // Create a new access token
-  const newRefreshToken = sessionRequireRefresh ? signJwtToken({ sessionId: session.id }, refreshTokenSignOptions) : undefined;
-  const accessToken = signJwtToken({ userId: session.userId, sessionId: session.id });
+  const newRefreshToken = sessionRequireRefresh ? signJwtToken<RefreshTPayload>({ sessionId: session.id }, refreshTokenSignOptions) : undefined;
+  const accessToken = signJwtToken<AccessTPayload>({ userId: session.userId, sessionId: session.id, role: session.user.role });
 
   logger.debug(`Access token refreshed for session ID: ${session.id}`);
 
