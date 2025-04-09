@@ -8,7 +8,7 @@ import { STATUS_CODES } from '@/constant/status.codes';
 import { CustomError } from '@/error/custom.api.error';
 
 import { compareValue } from '@/utils/bcrypt';
-import { refreshTokenSignOptions, signJwtToken } from '@/utils/jwt';
+import { type AccessTPayload, refreshTokenSignOptions, type RefreshTPayload, signJwtToken } from '@/utils/jwt';
 import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { LoginType } from '@/schema/auth/login.schema';
@@ -83,8 +83,8 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   logger.info(`Session created for user ID: ${user.id}, session ID: ${session.id}`);
 
   // Generate access and refresh tokens
-  const accessToken = signJwtToken({ userId: user.id, sessionId: session.id });
-  const refreshToken = signJwtToken({ sessionId: session.id }, refreshTokenSignOptions);
+  const accessToken = signJwtToken<AccessTPayload>({ userId: user.id, sessionId: session.id, role: user.role });
+  const refreshToken = signJwtToken<RefreshTPayload>({ sessionId: session.id }, refreshTokenSignOptions);
 
   logger.info(`Login successful. User ID: ${user.id}`);
 
