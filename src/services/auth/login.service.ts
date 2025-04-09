@@ -43,7 +43,7 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   }
 
   // Check if the password is correct, if not, throw an error
-  const isPasswordValid = await compareValue(password, user.password);
+  const isPasswordValid = await compareValue(password, user.password!);
   if (!isPasswordValid) {
     logger.warn(`Login failed: Incorrect password for user ID: ${user.id}`);
 
@@ -62,7 +62,7 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   }
 
   // Check if the user enable 2fa retuen user= null
-  if (user.userPreferences?.enable2FA) {
+  if (user.userPreferences?.isTwoFactorEnabled) {
     logger.info(`2FA required for login. User ID: ${user.id}`);
     return { user: null, mfaRequired: true, accessToken: '', refreshToken: '' };
   }
