@@ -164,8 +164,8 @@ export const logoutHandler = asyncCatch(async (req: Request, res) => {
  * Google Authentication API Controller
  * Handles Google authentication by redirecting the user to the Google login page.
  */
-export const googleAuthHandler = asyncCatch(async (_req: Request, res) => {
-  logger.info('Redirecting to Google login page');
+export const oauthRedirectHandler = asyncCatch(async (_req: Request, res) => {
+  logger.info('Redirecting to the client dashboard after successful OAuth login');
 
   // Successful authentication, redirect home.
   return res.redirect(`${env.app.CLIENT_URL}/dashboard`);

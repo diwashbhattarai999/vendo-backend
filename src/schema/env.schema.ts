@@ -141,6 +141,9 @@ export const envSchema = z.object({
 
       /** Facebook Redirect URI */
       FACEBOOK_REDIRECT_URI: z.string({ required_error: 'FACEBOOK_REDIRECT_URI is required.' }),
+
+      /** Facebook Client Callback URL */
+      CLIENT_FACEBOOK_CALLBACK_URL: z.string({ required_error: 'CLIENT_FACEBOOK_CALLBACK_URL is required.' }),
     })
     .strict(),
 });
