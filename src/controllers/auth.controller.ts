@@ -8,16 +8,16 @@ import { STATUS_CODES } from '@/constant/status.codes';
 import { asyncCatch } from '@/error/async.catch';
 import { CustomError } from '@/error/custom.api.error';
 
-import { clearAuthenticationCookies, getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from '@/utils/cookie';
+import { getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
 import { forgotPasswordService } from '@/services/auth/forgot.password.service';
 import { loginService } from '@/services/auth/login.service';
+import { logoutService } from '@/services/auth/logout.service';
 import { refreshTokenService } from '@/services/auth/refresh.token.service';
 import { registerService } from '@/services/auth/register.service';
 import { resetPasswordService } from '@/services/auth/reset.password.service';
 import { verifyEmailService } from '@/services/auth/verify.email.service';
-import { deleteSessionById } from '@/services/db/session.service';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 import type { ForgotPasswordType, ResetPasswordType } from '@/schema/auth/password.schema';
@@ -146,15 +146,8 @@ export const resetPasswordHandler = asyncCatch(async (req: Request<{}, {}, Reset
 export const logoutHandler = asyncCatch(async (req: Request, res) => {
   const t = req.t;
 
-  // Extract the session ID from the request
-  const sessionId = req.sessionId;
-  if (!sessionId) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_SESSION_NOT_FOUND, t('session.not_found', { ns: 'auth' }));
-
-  // Call the logout service to delete the session
-  await deleteSessionById(sessionId);
-
-  // Clear the authentication cookies
-  clearAuthenticationCookies(res);
+  // Call the logout service to delete the user's session
+  await logoutService(req, res);
 
   // Send a success response indicating that the user has logged out
   sendHttpResponse(res, STATUS_CODES.OK, t('logout.success', { ns: 'auth' }));

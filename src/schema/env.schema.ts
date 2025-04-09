@@ -119,31 +119,41 @@ export const envSchema = z.object({
       ),
     })
     .strict(),
-  oauth: z
+  oauth: z.object({
+    /** Google Client ID */
+    GOOGLE_CLIENT_ID: z.string({ required_error: 'GOOGLE_CLIENT_ID is required.' }),
+
+    /** Google Client Secret */
+    GOOGLE_CLIENT_SECRET: z.string({ required_error: 'GOOGLE_CLIENT_SECRET is required.' }),
+
+    /** Google Redirect URI */
+    GOOGLE_REDIRECT_URI: z.string({ required_error: 'GOOGLE_REDIRECT_URI is required.' }),
+
+    /** Google Client Callback URL */
+    CLIENT_GOOGLE_CALLBACK_URL: z.string({ required_error: 'CLIENT_GOOGLE_CALLBACK_URL is required.' }),
+
+    /** Facebook Client ID */
+    FACEBOOK_CLIENT_ID: z.string({ required_error: 'FACEBOOK_CLIENT_ID is required.' }),
+
+    /** Facebook Client Secret */
+    FACEBOOK_CLIENT_SECRET: z.string({ required_error: 'FACEBOOK_CLIENT_SECRET is required.' }),
+
+    /** Facebook Redirect URI */
+    FACEBOOK_REDIRECT_URI: z.string({ required_error: 'FACEBOOK_REDIRECT_URI is required.' }),
+
+    /** Facebook Client Callback URL */
+    CLIENT_FACEBOOK_CALLBACK_URL: z.string({ required_error: 'CLIENT_FACEBOOK_CALLBACK_URL is required.' }),
+  }),
+  cloudinary: z
     .object({
-      /** Google Client ID */
-      GOOGLE_CLIENT_ID: z.string({ required_error: 'GOOGLE_CLIENT_ID is required.' }),
+      /** Cloudinary Cloud Name */
+      CLOUD_NAME: z.string({ required_error: 'CLOUDINARY_CLOUD_NAME is required.' }),
 
-      /** Google Client Secret */
-      GOOGLE_CLIENT_SECRET: z.string({ required_error: 'GOOGLE_CLIENT_SECRET is required.' }),
+      /** Cloudinary API Key */
+      API_KEY: z.string({ required_error: 'CLOUDINARY_API_KEY is required.' }),
 
-      /** Google Redirect URI */
-      GOOGLE_REDIRECT_URI: z.string({ required_error: 'GOOGLE_REDIRECT_URI is required.' }),
-
-      /** Google Client Callback URL */
-      CLIENT_GOOGLE_CALLBACK_URL: z.string({ required_error: 'CLIENT_GOOGLE_CALLBACK_URL is required.' }),
-
-      /** Facebook Client ID */
-      FACEBOOK_CLIENT_ID: z.string({ required_error: 'FACEBOOK_CLIENT_ID is required.' }),
-
-      /** Facebook Client Secret */
-      FACEBOOK_CLIENT_SECRET: z.string({ required_error: 'FACEBOOK_CLIENT_SECRET is required.' }),
-
-      /** Facebook Redirect URI */
-      FACEBOOK_REDIRECT_URI: z.string({ required_error: 'FACEBOOK_REDIRECT_URI is required.' }),
-
-      /** Facebook Client Callback URL */
-      CLIENT_FACEBOOK_CALLBACK_URL: z.string({ required_error: 'CLIENT_FACEBOOK_CALLBACK_URL is required.' }),
+      /** Cloudinary API Secret */
+      API_SECRET: z.string({ required_error: 'CLOUDINARY_API_SECRET is required.' }),
     })
     .strict(),
 });
