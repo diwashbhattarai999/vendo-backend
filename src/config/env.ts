@@ -41,6 +41,11 @@ const parsedEnv = envSchema.safeParse({
     FACEBOOK_REDIRECT_URI: process.env.FACEBOOK_REDIRECT_URI,
     CLIENT_FACEBOOK_CALLBACK_URL: process.env.CLIENT_FACEBOOK_CALLBACK_URL,
   },
+  cloudinary: {
+    CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    API_KEY: process.env.CLOUDINARY_API_KEY,
+    API_SECRET: process.env.CLOUDINARY_API_SECRET,
+  },
 });
 
 /**

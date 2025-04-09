@@ -13,7 +13,9 @@
   "email_send_failed": "Failed to send email.",
   "user_not_found": "User not found with this email.",
 
-  "mfa": {
-    "already_enabled": "MFA is already enabled."
+  "file": {
+    "upload": {
+      "invalid_extension": "Invalid file extension. Allowed extensions are: {{allowedExtensions}}."
+    }
   }
 }

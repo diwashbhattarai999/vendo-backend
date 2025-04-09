@@ -26,7 +26,7 @@ export const generateMFASecret = async (user: Express.User, t: TFunction) => {
   // Check if MFA is already enabled
   if (user.userPreferences?.isTwoFactorEnabled) {
     logger.warn(`MFA already enabled for user ID: ${user.id}`);
-    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'error' }));
+    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'auth' }));
   }
 
   // Generate a new secret key if one doesn't exist
@@ -65,7 +65,7 @@ export const verifyMFASetup = async (otpCode: string, secretKey: string, t: TFun
 
   if (user.userPreferences?.isTwoFactorEnabled) {
     logger.warn(`MFA already enabled for user ID: ${user.id}`);
-    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'error' }));
+    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.MFA_ALREADY_ENABLED, t('mfa.already_enabled', { ns: 'auth' }));
   }
 
   // Verify the OTP code using the secret key

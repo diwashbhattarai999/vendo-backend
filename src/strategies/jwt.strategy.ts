@@ -9,8 +9,6 @@ import { STATUS_CODES } from '@/constant/status.codes';
 
 import { CustomError } from '@/error/custom.api.error';
 
-import { sanitizeUser } from '@/utils/sanitize.data';
-
 import { getUserById } from '@/services/db/user.service';
 
 /**
@@ -76,13 +74,13 @@ export const setupJWTStrategy = (passport: PassportStatic) => {
       try {
         // Fetch the user by ID from the database
         const user = await getUserById(payload.userId);
-        if (!user) return done(null, false); // User not found
+        if (!user) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, req.t('unauthorized', { ns: 'error' }));
 
         // Attach the session ID to the request object
         req.sessionId = payload.sessionId;
 
         // Sanitize the user object to remove sensitive fields
-        return done(null, sanitizeUser(user));
+        return done(null, user);
       } catch (error) {
         // Handle errors during user lookup
         return done(error, false);

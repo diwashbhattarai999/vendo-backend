@@ -1,3 +1,4 @@
+import { Provider } from '@prisma/client';
 import { addMinutes, isBefore } from 'date-fns';
 import type { TFunction } from 'i18next';
 
@@ -12,6 +13,7 @@ import { sanitizeUser } from '@/utils/sanitize.data';
 
 import type { LoginType } from '@/schema/auth/login.schema';
 
+import { getAccountByEmail } from '../db/account.service';
 import { createLoginAttempt, getLoginAttemptByIp, resetLoginAttempts, updateLoginAttempt } from '../db/login.attempts.service';
 import { createSession } from '../db/session.service';
 import { getUserByEmail } from '../db/user.service';
@@ -40,6 +42,15 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   if (!user) {
     logger.warn(`Login failed: No user found for email: ${email}`);
     throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_CREDENTIALS, t('login.invalid_credentials', { ns: 'auth' }));
+  }
+
+  // Check if the user's account is of type Email provider
+  const account = await getAccountByEmail(email);
+  if (!account) throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_ACCOUNT_NOT_FOUND, t('login.account_not_found', { ns: 'auth' }));
+
+  if (account.provider !== Provider.EMAIL) {
+    logger.warn(`Login failed: Invalid provider for email: ${email}`);
+    throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_PROVIDER, t('login.invalid_provider', { ns: 'auth' }));
   }
 
   // Check if the password is correct, if not, throw an error

@@ -7,5 +7,16 @@
   },
   "general": {
     "api_success": "API is up and running."
+  },
+  "user": {
+    "success": "User retrieved successfully.",
+    "update_success": "User updated successfully.",
+    "delete_success": "User deleted successfully.",
+    "change_password_success": "Password changed successfully.",
+    "invalid_old_password": "Old password is incorrect.",
+    "same_password": "New password cannot be the same as the old password.",
+    "invalid_file": "Invalid file format. Only .jpg, .jpeg and .png are allowed.",
+    "upload_profile_picture_success": "Profile picture uploaded successfully.",
+    "remove_profile_picture_success": "Profile picture removed successfully."
   }
 }

@@ -7,5 +7,16 @@
   },
   "general": {
     "api_success": "API सुरु र सञ्चालन गरिएको छ।"
+  },
+  "user": {
+    "success": "प्रयोगकर्ता सफलतापूर्वक प्राप्त गरियो।",
+    "update_success": "प्रयोगकर्ता सफलतापूर्वक अपडेट गरियो।",
+    "delete_success": "प्रयोगकर्ता सफलतापूर्वक मेटाइयो।",
+    "change_password_success": "पासवर्ड सफलतापूर्वक परिवर्तन गरियो।",
+    "invalid_old_password": "पुरानो पासवर्ड गलत छ।",
+    "same_password": "नयाँ पासवर्ड पुरानो पासवर्ड जस्तै हुन सक्दैन।",
+    "invalid_file": "अवैध फाइल ढाँचा। केवल .jpg, .jpeg र .png अनुमति दिइएको छ।",
+    "upload_profile_picture_success": "प्रोफाइल तस्वीर सफलतापूर्वक अपलोड गरियो।",
+    "remove_profile_picture_success": "प्रोफाइल तस्वीर सफलतापूर्वक हटाइयो।"
   }
 }
