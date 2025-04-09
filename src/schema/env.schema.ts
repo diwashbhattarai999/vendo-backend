@@ -119,6 +119,30 @@ export const envSchema = z.object({
       ),
     })
     .strict(),
+  oauth: z
+    .object({
+      /** Google Client ID */
+      GOOGLE_CLIENT_ID: z.string({ required_error: 'GOOGLE_CLIENT_ID is required.' }),
+
+      /** Google Client Secret */
+      GOOGLE_CLIENT_SECRET: z.string({ required_error: 'GOOGLE_CLIENT_SECRET is required.' }),
+
+      /** Google Redirect URI */
+      GOOGLE_REDIRECT_URI: z.string({ required_error: 'GOOGLE_REDIRECT_URI is required.' }),
+
+      /** Google Client Callback URL */
+      CLIENT_GOOGLE_CALLBACK_URL: z.string({ required_error: 'CLIENT_GOOGLE_CALLBACK_URL is required.' }),
+
+      /** Facebook Client ID */
+      FACEBOOK_CLIENT_ID: z.string({ required_error: 'FACEBOOK_CLIENT_ID is required.' }),
+
+      /** Facebook Client Secret */
+      FACEBOOK_CLIENT_SECRET: z.string({ required_error: 'FACEBOOK_CLIENT_SECRET is required.' }),
+
+      /** Facebook Redirect URI */
+      FACEBOOK_REDIRECT_URI: z.string({ required_error: 'FACEBOOK_REDIRECT_URI is required.' }),
+    })
+    .strict(),
 });
 
 /**

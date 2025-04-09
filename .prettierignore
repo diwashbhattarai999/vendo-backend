@@ -24,7 +24,6 @@ npm-debug.log*
 .env
 .env.local
 .env.*.local
-config
 *.yml
 *.yaml
 

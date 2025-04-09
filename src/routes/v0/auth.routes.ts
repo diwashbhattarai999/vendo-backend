@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   forgotPasswordHandler,
+  googleAuthHandler,
   loginHandler,
   logoutHandler,
   refreshTokenHandler,
@@ -17,6 +18,7 @@ import { forgotPasswordSchema, resetPasswordSchema } from '@/schema/auth/passwor
 import { registerSchema } from '@/schema/auth/register.schema';
 import { verifyEmailSchema } from '@/schema/auth/verify.email.schema';
 
+import { googleAuthMiddleware } from '@/strategies/google.strategy';
 import { authenticateJWT } from '@/strategies/jwt.strategy';
 
 /**
@@ -68,5 +70,17 @@ authRouter.post('/password/reset', validateSchema(resetPasswordSchema), resetPas
  * @description Endpoint to log out the user.
  */
 authRouter.post('/logout', authenticateJWT, logoutHandler);
+
+/**
+ * GET /google
+ * @description Endpoint to initiate Google authentication.
+ */
+authRouter.get('/google', googleAuthMiddleware);
+
+/**
+ * GET /google/callback
+ * @description Callback endpoint for Google authentication.
+ */
+authRouter.get('/google/callback', googleAuthMiddleware, googleAuthHandler);
 
 export { authRouter };

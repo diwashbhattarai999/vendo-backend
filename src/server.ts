@@ -2,6 +2,8 @@ import { env } from '@/config/env';
 
 import { getLocalIPAddress } from '@/utils/system.utils';
 
+import { connectDB } from './database/prisma-client';
+
 import app from '@/app';
 import { logger } from '@/logger/winston.logger';
 
@@ -13,7 +15,7 @@ import { logger } from '@/logger/winston.logger';
  * - Handles server errors such as permission issues and address in use.
  * - Gracefully shuts down the server on termination signals (SIGINT, SIGTERM).
  */
-const startServer = () => {
+const startServer = async () => {
   try {
     const { PORT, NODE_ENV } = env.app;
 
@@ -21,6 +23,8 @@ const startServer = () => {
     const server = app.listen(PORT, () => {
       logger.info(`\nServer is running in ${NODE_ENV} mode\n- Local: http://localhost:${PORT}\n- Network: http://${getLocalIPAddress()}:${PORT}`);
     });
+
+    await connectDB();
 
     // Handle server errors
     server.on('error', (error: NodeJS.ErrnoException) => {

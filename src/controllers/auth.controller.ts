@@ -1,5 +1,7 @@
 import type { Request } from 'express';
 
+import { env } from '@/config/env';
+
 import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
 
@@ -21,6 +23,8 @@ import type { LoginType } from '@/schema/auth/login.schema';
 import type { ForgotPasswordType, ResetPasswordType } from '@/schema/auth/password.schema';
 import type { RegisterType } from '@/schema/auth/register.schema';
 import type { VerifyEmailType } from '@/schema/auth/verify.email.schema';
+
+import { logger } from '@/logger/winston.logger';
 
 /**
  * Register API Controller
@@ -154,4 +158,15 @@ export const logoutHandler = asyncCatch(async (req: Request, res) => {
 
   // Send a success response indicating that the user has logged out
   sendHttpResponse(res, STATUS_CODES.OK, t('logout.success', { ns: 'auth' }));
+});
+
+/**
+ * Google Authentication API Controller
+ * Handles Google authentication by redirecting the user to the Google login page.
+ */
+export const googleAuthHandler = asyncCatch(async (_req: Request, res) => {
+  logger.info('Redirecting to Google login page');
+
+  // Successful authentication, redirect home.
+  return res.redirect(`${env.app.CLIENT_URL}/dashboard`);
 });

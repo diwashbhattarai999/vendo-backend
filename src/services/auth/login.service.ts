@@ -43,7 +43,7 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   }
 
   // Check if the password is correct, if not, throw an error
-  const isPasswordValid = await compareValue(password, user.password);
+  const isPasswordValid = await compareValue(password, user.password!);
   if (!isPasswordValid) {
     logger.warn(`Login failed: Incorrect password for user ID: ${user.id}`);
 

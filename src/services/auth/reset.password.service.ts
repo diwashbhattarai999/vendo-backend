@@ -46,7 +46,7 @@ export const resetPasswordService = async (t: TFunction, payload: ResetPasswordT
   }
 
   // Check if the new password is the same as the old password
-  const isSamePassword = await compareValue(password, user.password);
+  const isSamePassword = await compareValue(password, user.password!);
   if (isSamePassword) {
     logger.warn(`Reset password failed: New password is the same as the current one for user ID: ${user.id}`);
     throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.AUTH_PASSWORD_SAME, t('reset_password.same_password', { ns: 'auth' }));
