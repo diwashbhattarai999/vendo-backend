@@ -6,8 +6,6 @@ import { validateSchema } from '@/middlewares/schema.validation';
 
 import { deleteSessionSchema } from '@/schema/auth/session.schema';
 
-import { authenticateJWT } from '@/strategies/jwt.strategy';
-
 /**
  * Session router for handling session-related routes.
  *
@@ -20,18 +18,18 @@ const sessionRouter = Router();
  * GET /sessions/all
  * @description Endpoint to retrieve all sessions for the authenticated user.
  */
-sessionRouter.get('/all', authenticateJWT, getAllSessionsHandler);
+sessionRouter.get('/all', getAllSessionsHandler);
 
 /**
  * GET /sessions/current
  * @description Endpoint to retrieve the current session for the authenticated user.
  */
-sessionRouter.get('/current', authenticateJWT, getSessionHandler);
+sessionRouter.get('/current', getSessionHandler);
 
 /**
  * DELETE /sessions/delete/:sessionId
  * @description Endpoint to delete a specific session for the authenticated user.
  */
-sessionRouter.delete('/delete/:sessionId', authenticateJWT, validateSchema(deleteSessionSchema), deleteSessionHandler);
+sessionRouter.delete('/delete/:sessionId', validateSchema(deleteSessionSchema), deleteSessionHandler);
 
 export { sessionRouter };

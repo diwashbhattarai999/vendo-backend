@@ -12,6 +12,7 @@ import { sendHttpResponse } from '@/utils/send.http.response';
 import { uploadToCloudinary } from '@/utils/upload.to.cloudinary';
 
 import { logoutService } from '@/services/auth/logout.service';
+import { deleteAllSessionsByUserId } from '@/services/db/session.service';
 import { deleteUser, updateUser } from '@/services/db/user.service';
 
 import { getAuthenticatedUser } from '@/middlewares/get.authenticated.user';
@@ -138,6 +139,11 @@ export const uploadProfilePictureHandler = asyncCatch(async (req: Request, res) 
   sendHttpResponse(res, STATUS_CODES.OK, t('user.upload_profile_picture_success'), sanitizedUser);
 });
 
+/**
+ * Remove Profile Picture API Controller
+ * Handles profile picture removal requests by calling the remove profile picture service,
+ * and sending a response.
+ */
 export const removeProfilePictureHandler = asyncCatch(async (req: Request, res) => {
   const t = req.t;
 
@@ -152,4 +158,25 @@ export const removeProfilePictureHandler = asyncCatch(async (req: Request, res) 
 
   // Send the response with the updated user information
   sendHttpResponse(res, STATUS_CODES.OK, t('user.remove_profile_picture_success'), sanitizedUser);
+});
+
+/**
+ * Deactivate User API Controller
+ * Handles user account deactivation requests by validating the request body,
+ * calling the deactivate user service, and sending a response.
+ */
+export const deactivateUserHandler = asyncCatch(async (req: Request, res) => {
+  const t = req.t;
+
+  // Get the authenticated user from the request
+  const user = await getAuthenticatedUser(req);
+
+  // Call the update user service to deactivate the user account
+  await updateUser(user.id, { isActive: false });
+
+  // If logoutAllSessions is true, call the logout service to delete all sessions
+  await deleteAllSessionsByUserId(user.id);
+
+  // Send a success response indicating that the user account was deactivated
+  sendHttpResponse(res, STATUS_CODES.OK, t('user.deactivate_success'));
 });
