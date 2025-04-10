@@ -10,14 +10,28 @@ Backend for Vendo, a SaaS platform. Built with Node.js, Express, TypeScript, Pri
 
 ## 🚀 Features
 
-- **User Authentication**: Secure JWT-based authentication.
+- **User Authentication**: Secure JWT-based authentication and OAuth0 integration.
+- **Role-Based Access Control**: Fine-grained permissions for different user roles.
+- **RESTful API**: Well-structured API endpoints for easy integration.
+- **File Uploads**: Support for file uploads with Multer.
+- **Email Notifications**: Send emails using Resend for user notifications.
+- **Database Management**: Prisma ORM for seamless database interactions.
+- **Scalable Architecture**: Built with TypeScript for maintainability and scalability.
+- **Containerized Deployment**: Docker support for easy deployment.
+- **DevOps Ready**: Docker setup for local development and production.
+- **Monitoring**: Prometheus-compatible metrics via prom-client.
 
 ## 🛠 Tech Stack
 
-- **Backend**: Node.js, Express, TypeScript
-- **Database**: PostgreSQL, Prisma ORM
-- **Authentication**: JSON Web Tokens (JWT)
-- **Deployment**: Docker
+- **Language**: Node.js, TypeScript
+- **Framework**: Express
+- **ORM**: Prisma
+- **Database**: PostgreSQL
+- **Authentication**: JWT, Passport, OAuth (Google, Facebook)
+- **File Uploads**: Multer, Cloudinary
+- **Monitoring**: Winston (logging), prom-client (metrics)
+- **Email Service**: Resend
+- **DevOps**: Docker, Husky, Commitizen, Standard Version
 - **Package Manager**: pnpm
 
 ## 📦 Installation & Setup
@@ -94,6 +108,33 @@ The API documentation is available on Postman. You can view it here:
 
 [Postman API Documentation](https://documenter.getpostman.com/view/43388572/2sB2cRDjX4)
 
+## 💻 Scripts
+
+| Command                    | Description                                      |
+| -------------------------- | ------------------------------------------------ |
+| `pnpm dev`                 | Start the development server                     |
+| `pnpm clean`               | Clean the build directory and logs               |
+| `pnpm build`               | Build the project for production                 |
+| `pnpm start`               | Start the production server                      |
+| `pnpm type-check`          | Run TypeScript type checks                       |
+| `pnpm lint`                | Run ESLint checks                                |
+| `pnpm lint:fix`            | Fix ESLint issues                                |
+| `pnpm format`              | Format code using Prettier                       |
+| `pnpm format:check`        | Check code formatting using Prettier             |
+| `pnpm prepare`             | Prepare the project for release                  |
+| `pnpm commit`              | Commit changes with Commitizen                   |
+| `pnpm:release`             | Release a new version using Standard Version     |
+| `pnpm db:studio`           | Open Prisma Studio for database management       |
+| `pnpm db:pull`             | Pull the latest database schema using Prisma     |
+| `pnpm db:push`             | Push the Prisma schema to the database           |
+| `pnpm db:reset`            | Reset the database                               |
+| `pnpm db:migrate`          | Run database migrations                          |
+| `pnpm db:generate`         | Generate Prisma client                           |
+| `pnpm docker:compose:dev`  | Run the backend using Docker in development mode |
+| `pnpm docker:compose:prod` | Run the backend using Docker in production mode  |
+| `pnpm docker:compose:stop` | Stop the Docker containers                       |
+| `pnpm logs:dev`            | View logs for the development server             |
+| `pnpm logs:prod`           | View logs for the production server              |
 
 ## 📜 License
 
@@ -113,6 +154,7 @@ For more details, refer to `CONTRIBUTING.md`.
 
 ## 🔗 Links
 
-- **Repository**: [GitHub](https://github.com/diwashbhattarai999/vendo-backend)
-- **Issues**: [Report a bug](https://github.com/diwashbhattarai999/vendo-backend/issues)
-- **Author**: [Diwash Bhattarai](https://diwashb.me)
+- **🌐 Live Project** (Coming Soon)
+- **🗂 Repository**: [GitHub](https://github.com/diwashbhattarai999/vendo-backend)
+- **🐛 Issues**: [Report a bug](https://github.com/diwashbhattarai999/vendo-backend/issues)
+- **👤 Author**: [Diwash Bhattarai](https://diwashb.me)
