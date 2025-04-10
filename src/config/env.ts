@@ -12,6 +12,8 @@ dotenvFlow.config();
  */
 const parsedEnv = envSchema.safeParse({
   app: {
+    APP_NAME: process.env.APP_NAME,
+    ISSUER: process.env.ISSUER,
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
     LOG_LEVEL: process.env.LOG_LEVEL,

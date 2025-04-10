@@ -60,7 +60,7 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
   await sendEmail({
     t,
     to: newUser.email,
-    from: `Vendo <onboarding@${env.resend.RESEND_DOMAIN}>`,
+    from: `${env.app.APP_NAME} <onboarding@${env.resend.RESEND_DOMAIN}>`,
     ...verifyEmailTemplate({
       name: `${newUser.firstName} ${newUser.lastName}`,
       url: verificationUrl,

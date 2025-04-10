@@ -19,9 +19,6 @@ interface SendEmailParams {
   t: TFunction;
 }
 
-// Default sender email address
-const FROM_EMAIL = `Vendo <support@${env.resend.RESEND_DOMAIN}>`;
-
 /**
  * Function to send an email using Resend API.
  *
@@ -33,7 +30,14 @@ const FROM_EMAIL = `Vendo <support@${env.resend.RESEND_DOMAIN}>`;
  * @param {string} [params.from] - The sender email address (optional, defaults to FROM_EMAIL).
  * @returns {Promise<CreateEmailResponseSuccess | null>} - The response from the Resend API or null if an error occurs.
  */
-export const sendEmail = async ({ to, from = FROM_EMAIL, subject, text, html, t }: SendEmailParams): Promise<CreateEmailResponseSuccess | null> => {
+export const sendEmail = async ({
+  to,
+  from = `${env.app.APP_NAME} <support@${env.resend.RESEND_DOMAIN}>`,
+  subject,
+  text,
+  html,
+  t,
+}: SendEmailParams): Promise<CreateEmailResponseSuccess | null> => {
   const { data, error } = await resend.emails.send({
     from,
     to: Array.isArray(to) ? to : [to],

@@ -14,6 +14,18 @@ const TRUTHY_VALUES = ['true', 't', '1'];
 export const envSchema = z.object({
   app: z.object({
     /**
+     * The name of the application.
+     * This is a required field.
+     */
+    APP_NAME: z.string({ required_error: 'APP_NAME is required.' }),
+
+    /**
+     * The issuer of the application.
+     * This is a required field.
+     */
+    ISSUER: z.string({ required_error: 'ISSUER is required.' }),
+
+    /**
      * The environment in which the application is running.
      * Can be one of "development", "production", "staging", or "test".
      */

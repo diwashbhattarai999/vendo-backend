@@ -2,6 +2,8 @@ import type { TFunction } from 'i18next';
 import qrcode from 'qrcode';
 import speakeasy from 'speakeasy';
 
+import { env } from '@/config/env';
+
 import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
 
@@ -33,7 +35,7 @@ export const generateMFASecret = async (user: Express.User, t: TFunction) => {
   let secretKey = user.userPreferences?.twoFactorSecret;
   if (!secretKey) {
     logger.info(`Generating new MFA secret for user ID: ${user.id}`);
-    const secret = speakeasy.generateSecret({ name: 'Vendo' });
+    const secret = speakeasy.generateSecret({ name: env.app.APP_NAME });
     secretKey = secret.base32;
 
     // Save the secret key to the user's preferences
@@ -45,7 +47,7 @@ export const generateMFASecret = async (user: Express.User, t: TFunction) => {
   const url = speakeasy.otpauthURL({
     secret: secretKey,
     label: `${user.firstName} ${user.lastName}`,
-    issuer: 'vendo.com',
+    issuer: env.app.ISSUER,
     encoding: 'base32',
   });
 
