@@ -5,17 +5,16 @@ import { STATUS_CODES } from '@/constant/status.codes';
 
 import { CustomError } from '@/error/custom.api.error';
 
-import { getUserById } from '@/services/db/user.service';
+import { getUserByEmail } from '@/services/db/user.service';
 
 export const checkActiveUser = async (req: Request, _res: Response, next: NextFunction) => {
   const t = req.t;
-  const userId = req.user?.id;
+  const { email } = req.body;
 
-  // Check if the user ID is present in the request
-  if (!userId) return next(new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('unauthorized', { ns: 'error' })));
+  const user = await getUserByEmail(email);
 
-  // Fetch the user from the database using the user ID
-  const user = await getUserById(userId);
+  // Check if the user is present in the request
+  if (!user) return next(new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.NOT_FOUND, t('user.not_found')));
 
   // Check if the user is active, if not, return an error
   if (!user?.isActive) return next(new CustomError(STATUS_CODES.FORBIDDEN, ERROR_CODES.ACCOUNT_DEACTIVATED, t('user.account_deactivated')));

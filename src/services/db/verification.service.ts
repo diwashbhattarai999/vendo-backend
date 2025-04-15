@@ -23,38 +23,14 @@ type VerificationPayload = {
 export const generateVerificationToken = async (payload: VerificationPayload): Promise<VerificationToken> => {
   const { userId, type, expiresAt = anHourFromNow() } = payload;
 
+  // If a expired verification token already exists, delete all expired tokens
+  await prisma.verificationToken.deleteMany({ where: { userId, type, expiresAt: { lt: new Date() } } });
+
   // Generate a unique token
   const token = generateUniqueToken();
 
   // Create a new verification token in the database
   return await prisma.verificationToken.create({ data: { userId, token, expiresAt, type } });
-};
-
-/**
- * Generates a verification token for email verification.
- * If a verification token already exists for the user, it deletes the existing one before creating a new one.
- */
-export const generateVerificationTokenForEmail = async (payload: VerificationPayload): Promise<VerificationToken> => {
-  // Check if a verification token already exists for the user
-  const existingToken = await prisma.verificationToken.findFirst({ where: { userId: payload.userId, type: payload.type } });
-
-  // If a verification token already exists, delete it
-  if (existingToken) await prisma.verificationToken.delete({ where: { id: existingToken.id } });
-
-  // Generate aand return a new verification token
-  return await generateVerificationToken({ ...payload });
-};
-
-/**
- * Generates a verification token for password reset.
- * If an expired verification token already exists for the user, it deletes all expired tokens before creating a new one.
- */
-export const generateVerificationTokenForPasswordReset = async (payload: VerificationPayload): Promise<VerificationToken> => {
-  // If a expired verification token already exists, delete all expired tokens
-  await prisma.verificationToken.deleteMany({ where: { userId: payload.userId, type: payload.type, expiresAt: { lt: new Date() } } });
-
-  // Generate and return a new verification token
-  return await generateVerificationToken({ ...payload });
 };
 
 /**

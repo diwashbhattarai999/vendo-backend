@@ -18,5 +18,9 @@
     "upload": {
       "invalid_extension": "Invalid file extension. Allowed extensions are: {{allowedExtensions}}."
     }
+  },
+
+  "email": {
+    "not_verified": "Email not verified. Please verify your email address."
   }
 }

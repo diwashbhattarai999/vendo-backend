@@ -2,12 +2,17 @@ import { Provider } from '@prisma/client';
 import { addMinutes, isBefore } from 'date-fns';
 import type { TFunction } from 'i18next';
 
+import { env } from '@/config/env';
+
 import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
+import { VERIFICATION_TYPES } from '@/constant/verification.enum';
 
 import { CustomError } from '@/error/custom.api.error';
 
 import { compareValue } from '@/utils/bcrypt';
+import { fortyFiveMinutesFromNow } from '@/utils/date.time';
+import { checkTooManyVerificationEmails } from '@/utils/email.rate.limit';
 import { type AccessTPayload, refreshTokenSignOptions, type RefreshTPayload, signJwtToken } from '@/utils/jwt';
 import { sanitizeUser } from '@/utils/sanitize.data';
 
@@ -17,10 +22,12 @@ import { getAccountByEmail } from '../db/account.service';
 import { createLoginAttempt, getLoginAttemptByIp, resetLoginAttempts, updateLoginAttempt } from '../db/login.attempts.service';
 import { createSession } from '../db/session.service';
 import { getUserByEmail } from '../db/user.service';
+import { generateVerificationToken } from '../db/verification.service';
 
 import { logger } from '@/logger/winston.logger';
 import { sendEmail } from '@/mailers/mailer';
 import { blockedLoginTemplate } from '@/mailers/templates/blocked.login.template';
+import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
 
 type LoginServicePayload = LoginType['body'] & { userAgent?: string; ipAddress: string };
 
@@ -42,6 +49,43 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
   if (!user) {
     logger.warn(`Login failed: No user found for email: ${email}`);
     throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_INVALID_CREDENTIALS, t('login.invalid_credentials', { ns: 'auth' }));
+  }
+
+  // Check if the user is active, if not, throw an error
+  if (!user?.isActive) {
+    logger.warn(`Login failed: User account is deactivated for email: ${email}`);
+    throw new CustomError(STATUS_CODES.FORBIDDEN, ERROR_CODES.ACCOUNT_DEACTIVATED, t('user.account_deactivated'));
+  }
+
+  // Check if the user's email is verified, if not, throw an error
+  if (!user?.isEmailVerified) {
+    logger.warn(`Login failed: Email not verified for user ID: ${user.id}`);
+
+    // Check if the user has exceeded the maximum number of verification emails
+    await checkTooManyVerificationEmails({ t, userId: user.id, type: VERIFICATION_TYPES.EMAIL_VERIFICATION });
+
+    // Create a verification token for the new user
+    const verification = await generateVerificationToken({
+      userId: user.id,
+      expiresAt: fortyFiveMinutesFromNow(),
+      type: VERIFICATION_TYPES.EMAIL_VERIFICATION,
+    });
+    logger.debug(`Verification token generated for user ID: ${user.id}`);
+
+    // Send a verification email to the user
+    const verificationUrl = `${env.app.CLIENT_URL}/confirm-account?token=${verification.token}`;
+    await sendEmail({
+      t,
+      to: user.email,
+      from: `${env.app.APP_NAME} <onboarding@${env.resend.RESEND_DOMAIN}>`,
+      ...verifyEmailTemplate({
+        name: `${user.firstName} ${user.lastName}`,
+        url: verificationUrl,
+      }),
+    });
+    logger.info(`Verification email sent to user ID: ${user.id}`);
+
+    return { user: null, emailVerificationRequired: true, accessToken: '', refreshToken: '' };
   }
 
   // Check if the user's account is of type Email provider

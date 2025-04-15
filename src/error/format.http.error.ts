@@ -15,8 +15,7 @@ import { isDevelopment } from '@/utils/env.utils';
 export const formatHttpError = (req: Request, error: CustomError) => {
   return {
     success: false,
-    status: 'error',
-    statusCode: error.statusCode,
+    status: error.statusCode,
     message: error.message,
     error: {
       errorId: uuidv4(),

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { UserRole } from '@prisma/client';
 
-import { checkActiveUser } from '@/middlewares/check.active.user';
 import { checkRole } from '@/middlewares/check.user.role';
+import { isAuthenticated } from '@/middlewares/is.authenticated';
 
 import { adminRouter } from './admin.routes';
 import { authRouter } from './auth.routes';
@@ -23,9 +23,9 @@ import { authenticateJWT } from '@/strategies/jwt.strategy';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/sessions', authenticateJWT, checkActiveUser, sessionRouter);
+router.use('/sessions', authenticateJWT, isAuthenticated, sessionRouter);
 router.use('/mfa', mfaRouter);
-router.use('/user', authenticateJWT, checkActiveUser, userRouter);
-router.use('/admin', authenticateJWT, checkActiveUser, checkRole([UserRole.ADMIN]), adminRouter);
+router.use('/user', authenticateJWT, isAuthenticated, userRouter);
+router.use('/admin', authenticateJWT, isAuthenticated, checkRole([UserRole.ADMIN]), adminRouter);
 
 export { router };

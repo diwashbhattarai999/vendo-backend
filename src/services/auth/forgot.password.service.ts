@@ -8,10 +8,11 @@ import { VERIFICATION_TYPES } from '@/constant/verification.enum';
 
 import { CustomError } from '@/error/custom.api.error';
 
-import { anHourFromNow, threeMinutesAgo } from '@/utils/date.time';
+import { anHourFromNow } from '@/utils/date.time';
+import { checkTooManyVerificationEmails } from '@/utils/email.rate.limit';
 
 import { getUserByEmail } from '../db/user.service';
-import { countVerificationTokens, generateVerificationTokenForPasswordReset } from '../db/verification.service';
+import { generateVerificationToken } from '../db/verification.service';
 
 import { logger } from '@/logger/winston.logger';
 import { sendEmail } from '@/mailers/mailer';
@@ -32,23 +33,15 @@ export const forgotPasswordService = async (t: TFunction, email: string) => {
     throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.USER_NOT_FOUND, t('user_not_found', { ns: 'error' }));
   }
 
-  const timeAgo = threeMinutesAgo(); // 3 minutes ago
-  const maxAttempts = 2; // No. of emails allowed to be sent
+  // Check if the user is active, if not, throw an error
+  if (!user?.isActive) throw new CustomError(STATUS_CODES.FORBIDDEN, ERROR_CODES.ACCOUNT_DEACTIVATED, t('user.account_deactivated'));
 
-  // Count the number of password reset emails sent to the user in the last 3 minutes
-  const emailSentCount = await countVerificationTokens(user.id, VERIFICATION_TYPES.PASSWORD_RESET, timeAgo);
-  logger.debug(`Password reset request count in last 3 mins for user ID ${user.id}: ${emailSentCount}`);
-
-  // If the user has sent more than 2 password reset emails in the last 3 minutes, throw an error
-  // This is to prevent spamming the email with password reset requests
-  if (emailSentCount >= maxAttempts) {
-    logger.warn(`Rate limit exceeded for password reset. User ID: ${user.id}`);
-    throw new CustomError(STATUS_CODES.BAD_REQUEST, ERROR_CODES.TOO_MANY_REQUESTS, t('too_many_requests', { ns: 'error' }));
-  }
+  // Check if the user has exceeded the maximum number of verification emails
+  await checkTooManyVerificationEmails({ t, userId: user.id, type: VERIFICATION_TYPES.PASSWORD_RESET });
 
   // Generate a new password reset token, valid for 1 hour
   const expiresAt = anHourFromNow();
-  const validToken = await generateVerificationTokenForPasswordReset({ userId: user.id, type: VERIFICATION_TYPES.PASSWORD_RESET, expiresAt });
+  const validToken = await generateVerificationToken({ userId: user.id, type: VERIFICATION_TYPES.PASSWORD_RESET, expiresAt });
 
   logger.info(`Password reset token created for user ID: ${user.id}`);
 

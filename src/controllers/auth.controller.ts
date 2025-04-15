@@ -52,7 +52,17 @@ export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['bo
   const ipAddress = req.ip;
 
   // Call the login service to authenticate the user
-  const { user, accessToken, refreshToken, mfaRequired } = await loginService(t, { ...req.body, userAgent, ipAddress: ipAddress || '' });
+  const { user, accessToken, refreshToken, mfaRequired, emailVerificationRequired } = await loginService(t, {
+    ...req.body,
+    userAgent,
+    ipAddress: ipAddress || '',
+  });
+
+  // If Email verification is required, send a response indicating that
+  if (emailVerificationRequired) {
+    sendHttpResponse(res, STATUS_CODES.OK, t('email_verification_sent', { ns: 'auth' }), { emailVerificationRequired });
+    return;
+  }
 
   // If MFA is required, send a response indicating that MFA is required
   if (mfaRequired) {

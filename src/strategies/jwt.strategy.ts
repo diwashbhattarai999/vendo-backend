@@ -36,7 +36,7 @@ const options: StrategyOptionsWithRequest = {
       // Extract the access token from cookies
       const accessToken = req.cookies.accessToken;
       if (!accessToken)
-        throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.UNAUTHORIZED, t('jwt.unauthorized_access_token', { ns: 'auth' }));
+        throw new CustomError(STATUS_CODES.UNAUTHORIZED, ERROR_CODES.AUTH_TOKEN_NOT_FOUND, t('jwt.unauthorized_access_token', { ns: 'auth' }));
       return accessToken;
     },
   ]),

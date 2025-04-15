@@ -27,8 +27,12 @@ interface LoginOrCreateAccountType {
 export const loginOrCreateAccountService = async (data: LoginOrCreateAccountType) => {
   const { t, provider, providerId, firstName, lastName, profilePictureUrl, email, emailVerified, accessToken, refreshToken } = data;
 
-  // Check if the email is already registered with different provider
   const existingUser = await getAccountByEmail(email);
+
+  // Check if the user is active, if not, throw an error
+  if (!existingUser?.user.isActive) throw new CustomError(STATUS_CODES.FORBIDDEN, ERROR_CODES.ACCOUNT_DEACTIVATED, t('user.account_deactivated'));
+
+  // Check if the email is already registered with a different provider
   if (existingUser && existingUser.provider !== provider) {
     throw new CustomError(
       STATUS_CODES.BAD_REQUEST,

@@ -15,7 +15,7 @@ import { sanitizeUser } from '@/utils/sanitize.data';
 import type { RegisterType } from '@/schema/auth/register.schema';
 
 import { createUser, getUserByEmail } from '../db/user.service';
-import { generateVerificationTokenForEmail } from '../db/verification.service';
+import { generateVerificationToken } from '../db/verification.service';
 
 import { logger } from '@/logger/winston.logger';
 import { sendEmail } from '@/mailers/mailer';
@@ -48,7 +48,7 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
   logger.info(`New user created. ID: ${newUser.id}, Email: ${email}`);
 
   // Create a verification token for the new user
-  const verification = await generateVerificationTokenForEmail({
+  const verification = await generateVerificationToken({
     userId: newUser.id,
     expiresAt: fortyFiveMinutesFromNow(),
     type: VERIFICATION_TYPES.EMAIL_VERIFICATION,

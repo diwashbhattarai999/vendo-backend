@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { generateMFAHandler, revokeMFAHandler, verifyMFAForLoginHandler, verifyMFASetupHandler } from '@/controllers/mfa.controller';
 
-import { checkActiveUser } from '@/middlewares/check.active.user';
+import { isAuthenticated } from '@/middlewares/is.authenticated';
 import { validateSchema } from '@/middlewares/schema.validation';
 
 import { verifyMfaForLoginSchema, verifyMfaSetupSchema } from '@/schema/auth/mfa.schema';
@@ -24,12 +24,11 @@ const mfaRouter = Router();
 mfaRouter.post('/verify-login', validateSchema(verifyMfaForLoginSchema), verifyMFAForLoginHandler);
 
 /**
- * Middleware to authenticate JWT and check if the user is active.
- * This middleware is applied to all routes below this point.
- * It ensures that the user is authenticated and has an active account.
- * If the user is not authenticated or their account is inactive, an error will be thrown.
+ * Middleware to authenticate JWT and check if the user is authenticated.
+ * This middleware is applied to all routes in this router.
+ * It ensures that the user is authenticated before accessing any MFA-related endpoints.
  */
-mfaRouter.use(authenticateJWT, checkActiveUser);
+mfaRouter.use(authenticateJWT, isAuthenticated);
 
 /**
  * MFA router for handling multi-factor authentication-related routes.
