@@ -16,6 +16,7 @@ import { loginService } from '@/services/auth/login.service';
 import { logoutService } from '@/services/auth/logout.service';
 import { refreshTokenService } from '@/services/auth/refresh.token.service';
 import { registerService } from '@/services/auth/register.service';
+import { resendEmailVerificationService } from '@/services/auth/resend.email.verification.service';
 import { resetPasswordService } from '@/services/auth/reset.password.service';
 import { verifyEmailService } from '@/services/auth/verify.email.service';
 
@@ -116,6 +117,22 @@ export const verifyEmailHandler = asyncCatch(async (req: Request<{}, {}, VerifyE
 
   // Send a success response indicating that the email verification was successful
   sendHttpResponse(res, STATUS_CODES.OK, t('verify_email.success', { ns: 'auth' }));
+});
+
+/**
+ * Resend Email Verification API Controller
+ * Handles email verification resend requests by validating the request body,
+ * calling the resend email verification service, and sending a response.
+ */
+export const resendEmailVerificationHandler = asyncCatch(async (req: Request, res) => {
+  const t = req.t;
+  const { email } = req.body;
+
+  // Call the resend email verification service to send a new verification email
+  await resendEmailVerificationService(t, email);
+
+  // Send a success response indicating that the email verification was resent
+  sendHttpResponse(res, STATUS_CODES.OK, t('resend_email_verification.success', { ns: 'auth' }));
 });
 
 /**

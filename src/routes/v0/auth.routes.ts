@@ -7,6 +7,7 @@ import {
   oauthRedirectHandler,
   refreshTokenHandler,
   registerHandler,
+  resendEmailVerificationHandler,
   resetPasswordHandler,
   verifyEmailHandler,
 } from '@/controllers/auth.controller';
@@ -16,6 +17,7 @@ import { validateSchema } from '@/middlewares/schema.validation';
 import { loginSchema } from '@/schema/auth/login.schema';
 import { forgotPasswordSchema, resetPasswordSchema } from '@/schema/auth/password.schema';
 import { registerSchema } from '@/schema/auth/register.schema';
+import { resendEmailVerificationSchema } from '@/schema/auth/resend.email.verification';
 import { verifyEmailSchema } from '@/schema/auth/verify.email.schema';
 
 import { facebookAuthMiddleware } from '@/strategies/facebook.strategy';
@@ -53,6 +55,12 @@ authRouter.get('/refresh', refreshTokenHandler);
  * @description Endpoint to verify user email.
  */
 authRouter.post('/verify/email', validateSchema(verifyEmailSchema), verifyEmailHandler);
+
+/**
+ * POST /resend/verification
+ * @description Endpoint to resend email verification.
+ */
+authRouter.post('/resend/verification', validateSchema(resendEmailVerificationSchema), resendEmailVerificationHandler);
 
 /**
  * POST /password/forgot
