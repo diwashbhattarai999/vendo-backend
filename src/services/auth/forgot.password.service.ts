@@ -22,7 +22,7 @@ import { passwordResetTemplate } from '@/mailers/templates/password.reset.templa
  * It checks if the user exists, counts the number of password reset emails sent in the last 3 minutes,
  * generates a new password reset token, and sends the password reset email to the user.
  */
-export const forgotPasswordService = async (t: TFunction, email: string) => {
+export const forgotPasswordService = async (t: TFunction, email: string, language?: string) => {
   logger.debug(`Initiating password reset flow for email: ${email}`);
 
   // Check if the user exists, if not, throw an error
@@ -45,7 +45,7 @@ export const forgotPasswordService = async (t: TFunction, email: string) => {
   logger.info(`Password reset token created for user ID: ${user.id}`);
 
   // Send the password reset email to the user, including the reset link with the token and expiration time
-  const resetLink = getResetPasswordUrl(validToken.token, expiresAt.getTime());
+  const resetLink = getResetPasswordUrl(validToken.token, expiresAt.getTime(), language);
   const emailResponse = await sendEmail({ t, to: user.email, ...passwordResetTemplate(resetLink) });
 
   logger.info(`Password reset email dispatched to user ID: ${user.id}, email ID: ${emailResponse?.id}`);

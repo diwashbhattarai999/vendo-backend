@@ -33,7 +33,7 @@ import { logger } from '@/logger/winston.logger';
  */
 export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterType['body']>, res) => {
   const t = req.t;
-  const language = req.headers['accept-language'];
+  const language = req.acceptsLanguages('en', 'ne') || 'en';
 
   // Call the register service to create a new user
   const newUser = await registerService(t, { ...req.body }, language);
@@ -132,7 +132,7 @@ export const verifyEmailHandler = asyncCatch(async (req: Request<{}, {}, VerifyE
 export const resendEmailVerificationHandler = asyncCatch(async (req: Request, res) => {
   const t = req.t;
   const { email } = req.body;
-  const language = req.headers['accept-language'];
+  const language = req.acceptsLanguages('en', 'ne') || 'en';
 
   // Call the resend email verification service to send a new verification email
   await resendEmailVerificationService(t, email, language);
@@ -148,9 +148,10 @@ export const resendEmailVerificationHandler = asyncCatch(async (req: Request, re
  */
 export const forgotPasswordHandler = asyncCatch(async (req: Request<{}, {}, ForgotPasswordType['body']>, res) => {
   const t = req.t;
+  const language = req.acceptsLanguages('en', 'ne') || 'en';
 
   // Call the forgot password service to send a password reset email
-  await forgotPasswordService(t, req.body.email);
+  await forgotPasswordService(t, req.body.email, language);
 
   // Send a success response indicating that the password reset email was sent
   sendHttpResponse(res, STATUS_CODES.OK, t('forgot_password.success', { ns: 'auth' }));
@@ -191,7 +192,8 @@ export const logoutHandler = asyncCatch(async (req: Request, res) => {
  * Handles Google authentication by redirecting the user to the Google login page.
  */
 export const oauthRedirectHandler = asyncCatch(async (req: Request, res) => {
-  const language = req.headers['accept-language'];
+  const language = req.acceptsLanguages('en', 'ne') || 'en';
+
   logger.info('Redirecting to the client dashboard after successful OAuth login');
 
   // Successful authentication, redirect home.

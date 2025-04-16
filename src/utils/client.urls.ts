@@ -10,7 +10,7 @@ export const getDashboardUrl = (language?: string) => {
   return `${baseUrl}/${language}/dashboard`;
 };
 
-export const getResetPasswordUrl = (token: string, expiresAt: number) => {
+export const getResetPasswordUrl = (token: string, expiresAt: number, language?: string) => {
   const baseUrl = env.app.CLIENT_URL;
-  return `${baseUrl}/reset-password?token=${token}&exp=${expiresAt}`;
+  return `${baseUrl}/${language}/reset-password?token=${token}&exp=${expiresAt}`;
 };
