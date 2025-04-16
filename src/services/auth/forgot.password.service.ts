@@ -1,13 +1,12 @@
 import type { TFunction } from 'i18next';
 
-import { env } from '@/config/env';
-
 import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
 import { VERIFICATION_TYPES } from '@/constant/verification.enum';
 
 import { CustomError } from '@/error/custom.api.error';
 
+import { getResetPasswordUrl } from '@/utils/client.urls';
 import { anHourFromNow } from '@/utils/date.time';
 import { checkTooManyVerificationEmails } from '@/utils/email.rate.limit';
 
@@ -46,7 +45,7 @@ export const forgotPasswordService = async (t: TFunction, email: string) => {
   logger.info(`Password reset token created for user ID: ${user.id}`);
 
   // Send the password reset email to the user, including the reset link with the token and expiration time
-  const resetLink = `${env.app.CLIENT_URL}/reset-password?token=${validToken.token}&exp=${expiresAt.getTime()}`;
+  const resetLink = getResetPasswordUrl(validToken.token, expiresAt.getTime());
   const emailResponse = await sendEmail({ t, to: user.email, ...passwordResetTemplate(resetLink) });
 
   logger.info(`Password reset email dispatched to user ID: ${user.id}, email ID: ${emailResponse?.id}`);

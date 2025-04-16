@@ -11,6 +11,7 @@ import { VERIFICATION_TYPES } from '@/constant/verification.enum';
 import { CustomError } from '@/error/custom.api.error';
 
 import { compareValue } from '@/utils/bcrypt';
+import { getConfirmAccountUrl } from '@/utils/client.urls';
 import { fortyFiveMinutesFromNow } from '@/utils/date.time';
 import { checkTooManyVerificationEmails } from '@/utils/email.rate.limit';
 import { type AccessTPayload, refreshTokenSignOptions, type RefreshTPayload, signJwtToken } from '@/utils/jwt';
@@ -39,7 +40,7 @@ const BLOCK_DURATION_MINUTES = 1;
  * It checks if the user exists, validates the password,
  * and generates access and refresh tokens for the user.
  */
-export const loginService = async (t: TFunction, payload: LoginServicePayload) => {
+export const loginService = async (t: TFunction, payload: LoginServicePayload, language?: string) => {
   const { email, password, userAgent, ipAddress } = payload;
 
   logger.debug(`Processing login for email: ${email}`);
@@ -73,7 +74,7 @@ export const loginService = async (t: TFunction, payload: LoginServicePayload) =
     logger.debug(`Verification token generated for user ID: ${user.id}`);
 
     // Send a verification email to the user
-    const verificationUrl = `${env.app.CLIENT_URL}/confirm-account?token=${verification.token}`;
+    const verificationUrl = getConfirmAccountUrl(verification.token, user.email, language);
     await sendEmail({
       t,
       to: user.email,

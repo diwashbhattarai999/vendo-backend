@@ -8,6 +8,7 @@ import { VERIFICATION_TYPES } from '@/constant/verification.enum';
 
 import { CustomError } from '@/error/custom.api.error';
 
+import { getConfirmAccountUrl } from '@/utils/client.urls';
 import { fortyFiveMinutesFromNow } from '@/utils/date.time';
 import { checkTooManyVerificationEmails } from '@/utils/email.rate.limit';
 
@@ -23,7 +24,7 @@ import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
  * It checks if the user exists, verifies if the email is already verified,
  * and sends a new verification email if necessary.
  */
-export const resendEmailVerificationService = async (t: TFunction, email: string) => {
+export const resendEmailVerificationService = async (t: TFunction, email: string, language?: string) => {
   const user = await getUserByEmail(email);
   if (!user) throw new CustomError(STATUS_CODES.NOT_FOUND, ERROR_CODES.USER_NOT_FOUND, t('user.not_found'));
 
@@ -54,7 +55,7 @@ export const resendEmailVerificationService = async (t: TFunction, email: string
   });
 
   // Send the verification email
-  const verificationUrl = `${env.app.CLIENT_URL}/confirm-account?token=${verification.token}`;
+  const verificationUrl = getConfirmAccountUrl(verification.token, user.email, language);
   await sendEmail({
     t,
     to: user.email,

@@ -1,13 +1,12 @@
 import type { Request } from 'express';
 
-import { env } from '@/config/env';
-
 import { ERROR_CODES } from '@/constant/error.codes';
 import { STATUS_CODES } from '@/constant/status.codes';
 
 import { asyncCatch } from '@/error/async.catch';
 import { CustomError } from '@/error/custom.api.error';
 
+import { getDashboardUrl } from '@/utils/client.urls';
 import { getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from '@/utils/cookie';
 import { sendHttpResponse } from '@/utils/send.http.response';
 
@@ -34,9 +33,10 @@ import { logger } from '@/logger/winston.logger';
  */
 export const registerHandler = asyncCatch(async (req: Request<{}, {}, RegisterType['body']>, res) => {
   const t = req.t;
+  const language = req.headers['accept-language'];
 
   // Call the register service to create a new user
-  const newUser = await registerService(t, { ...req.body });
+  const newUser = await registerService(t, { ...req.body }, language);
 
   // Send a success response with the new user's information
   sendHttpResponse(res, STATUS_CODES.CREATED, t('register.success', { ns: 'auth' }), newUser);
@@ -51,13 +51,18 @@ export const loginHandler = asyncCatch(async (req: Request<{}, {}, LoginType['bo
   const t = req.t;
   const userAgent = req.headers['user-agent'];
   const ipAddress = req.ip;
+  const language = req.acceptsLanguages('en', 'ne') || 'en';
 
   // Call the login service to authenticate the user
-  const { user, accessToken, refreshToken, mfaRequired, emailVerificationRequired } = await loginService(t, {
-    ...req.body,
-    userAgent,
-    ipAddress: ipAddress || '',
-  });
+  const { user, accessToken, refreshToken, mfaRequired, emailVerificationRequired } = await loginService(
+    t,
+    {
+      ...req.body,
+      userAgent,
+      ipAddress: ipAddress || '',
+    },
+    language,
+  );
 
   // If Email verification is required, send a response indicating that
   if (emailVerificationRequired) {
@@ -127,9 +132,10 @@ export const verifyEmailHandler = asyncCatch(async (req: Request<{}, {}, VerifyE
 export const resendEmailVerificationHandler = asyncCatch(async (req: Request, res) => {
   const t = req.t;
   const { email } = req.body;
+  const language = req.headers['accept-language'];
 
   // Call the resend email verification service to send a new verification email
-  await resendEmailVerificationService(t, email);
+  await resendEmailVerificationService(t, email, language);
 
   // Send a success response indicating that the email verification was resent
   sendHttpResponse(res, STATUS_CODES.OK, t('resend_email_verification.success', { ns: 'auth' }));
@@ -184,9 +190,11 @@ export const logoutHandler = asyncCatch(async (req: Request, res) => {
  * Google Authentication API Controller
  * Handles Google authentication by redirecting the user to the Google login page.
  */
-export const oauthRedirectHandler = asyncCatch(async (_req: Request, res) => {
+export const oauthRedirectHandler = asyncCatch(async (req: Request, res) => {
+  const language = req.headers['accept-language'];
   logger.info('Redirecting to the client dashboard after successful OAuth login');
 
   // Successful authentication, redirect home.
-  return res.redirect(`${env.app.CLIENT_URL}/dashboard`);
+  const dashboardUrl = getDashboardUrl(language);
+  return res.redirect(dashboardUrl);
 });

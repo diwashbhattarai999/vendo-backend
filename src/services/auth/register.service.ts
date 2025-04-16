@@ -9,6 +9,7 @@ import { VERIFICATION_TYPES } from '@/constant/verification.enum';
 import { CustomError } from '@/error/custom.api.error';
 
 import { hashValue } from '@/utils/bcrypt';
+import { getConfirmAccountUrl } from '@/utils/client.urls';
 import { fortyFiveMinutesFromNow } from '@/utils/date.time';
 import { sanitizeUser } from '@/utils/sanitize.data';
 
@@ -27,7 +28,7 @@ import { verifyEmailTemplate } from '@/mailers/templates/verify.email.template';
  * creates a new user, generates a verification token,
  * and sends a verification email to the user.
  */
-export const registerService = async (t: TFunction, payload: RegisterType['body']) => {
+export const registerService = async (t: TFunction, payload: RegisterType['body'], language?: string) => {
   const { email, password, firstName, lastName } = payload;
 
   logger.debug(`Attempting registration for email: ${email}`);
@@ -56,7 +57,7 @@ export const registerService = async (t: TFunction, payload: RegisterType['body'
   logger.debug(`Verification token generated for user ID: ${newUser.id}`);
 
   // Send a verification email to the user
-  const verificationUrl = `${env.app.CLIENT_URL}/confirm-account?token=${verification.token}`;
+  const verificationUrl = getConfirmAccountUrl(verification.token, newUser.email, language);
   await sendEmail({
     t,
     to: newUser.email,
